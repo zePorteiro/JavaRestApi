@@ -27,11 +27,7 @@ public class EntregaService {
         Entrega entrega = entregaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Entrega não encontrada."));
 
-        if (entrega.isRecebido()) {
-            throw new IllegalArgumentException("Entrega já recebida.");
-        }
 
-        entrega.setTipoEntrega(entregaDto.getTipoEntrega());
         entrega.setDataRecebimentoPorteiro(entregaDto.getDataRecebimentoPorteiro());
         return convertToDto(entregaRepository.save(entrega));
     }
@@ -44,28 +40,22 @@ public class EntregaService {
         Entrega entrega = entregaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Entrega não encontrada."));
 
-        if (entrega.isRecebido()) {
-            throw new IllegalArgumentException("A entrega já foi retirada.");
-        }
 
         entrega.setDataRecebimentoMorador(LocalDate.now());
-        entrega.setRecebido(true);
         entregaRepository.save(entrega);
         return "Entrega retirada com sucesso.";
     }
 
-    public List<EntregaListagemDto> listarEntregasPendentes() {
-        return entregaRepository.findByRecebidoFalse().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
+//    public List<EntregaListagemDto> listarEntregasPendentes() {
+//        return entregaRepository.findByRecebidoFalse().stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
 
     private EntregaListagemDto convertToDto(Entrega entrega) {
         EntregaListagemDto dto = new EntregaListagemDto();
-        dto.setTipoEntrega(entrega.getTipoEntrega());
         dto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
         dto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
-        dto.setRecebido(entrega.isRecebido());
         return dto;
     }
 }

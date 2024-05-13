@@ -14,7 +14,6 @@ import sptech.school.apizeporteiro.mapper.EntregaMapper;
 import sptech.school.apizeporteiro.service.entrega.EntregaService;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -98,9 +97,9 @@ public class EntregaController {
         return ResponseEntity.ok(mensagem);
     }
 
-    @GetMapping("/pendentes")
-    public ResponseEntity<List<EntregaListagemDto>> listarEntregasPendentes() {
-        List<EntregaListagemDto> pendentes = entregaService.listarEntregasPendentes();
-        return pendentes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pendentes);
-    }
+//    @GetMapping("/pendentes")
+//    public ResponseEntity<List<EntregaListagemDto>> listarEntregasPendentes() {
+//        List<EntregaListagemDto> pendentes = entregaService.listarEntregasPendentes();
+//        return pendentes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(pendentes);
+//    }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,17 +58,19 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/clientes/login/**"),
             new AntPathRequestMatcher("/enderecos/**"),
             new AntPathRequestMatcher("/entregas/**"),
-            new AntPathRequestMatcher("/pyhton-api/**"),
+            new AntPathRequestMatcher("/condominios/**"),
+            new AntPathRequestMatcher("/python-api/**"),
             new AntPathRequestMatcher("/react-app/**")
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .cors(Customizer.withDefaults())
-                .csrf(CsrfConfigurer::disable)
-                .authorizeRequests(authorize -> authorize
-                        .requestMatchers(URLS_PERMITIDAS)
+                .csrf(CsrfConfigurer<HttpSecurity>::disable)
+                .authorizeRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
                         .permitAll()
                         .anyRequest()
                         .authenticated()

@@ -18,10 +18,11 @@ public class Entrega {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String tipoEntrega;
+    private String nome;
+    private String bloco;
+    private Integer numero;
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
-    private boolean recebido;
     @ManyToOne
     @JoinColumn(name = "fk_porteiro")
     private Porteiro fkPorteiro;

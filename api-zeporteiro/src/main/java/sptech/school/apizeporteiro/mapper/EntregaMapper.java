@@ -12,10 +12,8 @@ public class EntregaMapper {
 
         Entrega entrega = new Entrega();
 
-        entrega.setTipoEntrega(dto.getTipoEntrega());
         entrega.setDataRecebimentoPorteiro(dto.getDataRecebimentoPorteiro());
         entrega.setDataRecebimentoMorador(dto.getDataRecebimentoMorador()); // vai ser nulo?
-        entrega.setRecebido(dto.isRecebido()); // vai começar como false?
         // vão ter as fk?
 
         return entrega;
@@ -28,10 +26,9 @@ public class EntregaMapper {
 
         EntregaListagemDto entregaListagemDto = new EntregaListagemDto();
 
-        entregaListagemDto.setTipoEntrega(entity.getTipoEntrega());
         entregaListagemDto.setDataRecebimentoPorteiro(entity.getDataRecebimentoPorteiro());
         entregaListagemDto.setDataRecebimentoMorador(entity.getDataRecebimentoMorador());
-        entregaListagemDto.setRecebido(entity.isRecebido());
+//        entregaListagemDto.setRecebido(entity.isRecebido());
 
         return entregaListagemDto;
     }
