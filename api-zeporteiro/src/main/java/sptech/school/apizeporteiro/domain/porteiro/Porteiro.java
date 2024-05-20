@@ -8,6 +8,9 @@ import sptech.school.apizeporteiro.controller.CondominioController;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 
 @Entity
+@Table(
+        name = "porteiro"
+)
 @Getter
 @Setter
 public class Porteiro {

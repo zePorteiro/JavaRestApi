@@ -60,6 +60,7 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/entregas/**"),
             new AntPathRequestMatcher("/condominios/**"),
             new AntPathRequestMatcher("/python-api/**"),
+            new AntPathRequestMatcher("/porteiros/**"),
             new AntPathRequestMatcher("/react-app/**")
     };
 

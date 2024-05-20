@@ -10,6 +10,8 @@ import sptech.school.apizeporteiro.mapper.PorteiroMapper;
 import sptech.school.apizeporteiro.service.condominio.dto.CondominioCriacaoDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroCriacaoDto;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PorteiroService {
@@ -19,5 +21,17 @@ public class PorteiroService {
     public void criar(PorteiroCriacaoDto porteiroCriacaoDto) {
         final Porteiro novoPorteiro = PorteiroMapper.toEntity(porteiroCriacaoDto);
         this.porteiroRepository.save(novoPorteiro);
+    }
+
+    public void criarPorteiro(Porteiro porteiro) {
+        porteiroRepository.save(porteiro);
+    }
+
+    public List<Porteiro> listar() {
+        return porteiroRepository.findAll();
+    }
+
+    public void deletar(int id) {
+        porteiroRepository.deleteById(id);
     }
 }
