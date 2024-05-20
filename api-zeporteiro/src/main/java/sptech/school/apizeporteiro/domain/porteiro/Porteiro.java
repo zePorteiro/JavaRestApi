@@ -1,15 +1,15 @@
 package sptech.school.apizeporteiro.domain.porteiro;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import sptech.school.apizeporteiro.controller.CondominioController;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
 
 @Entity
 @Getter
 @Setter
-@Table(
-        name = "porteiro"
-)
 public class Porteiro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,5 @@ public class Porteiro {
     private String rg;
     private String senha;
     @ManyToOne
-    @JoinColumn(name = "fk_porteiro")
-    private Porteiro fkPorteiro;
+    private Condominio condominio;
 }
