@@ -1,11 +1,14 @@
 package sptech.school.apizeporteiro.domain.condominio;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
+import sptech.school.apizeporteiro.domain.cliente.Cliente;
+import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
+import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,4 +23,10 @@ public class Condominio {
     private String numero;
     private String bairro;
     private String cidade;
+    @ManyToOne
+    private Cliente cliente;
+    @OneToMany(mappedBy = "condominio")
+    private List<Apartamento> apartamentos;
+    @OneToMany(mappedBy = "condominio")
+    private List<Porteiro> porteiros;
 }

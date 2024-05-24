@@ -15,4 +15,5 @@ public class ApartamentoCriacaoDto {
     @NotBlank
     @NotNull
     private boolean vazio;
+    private Integer condominioId;
 }

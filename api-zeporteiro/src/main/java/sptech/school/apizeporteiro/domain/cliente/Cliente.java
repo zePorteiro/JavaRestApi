@@ -3,6 +3,10 @@ package sptech.school.apizeporteiro.domain.cliente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.w3c.dom.stylesheets.LinkStyle;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,4 +31,6 @@ public class Cliente {
     private String senha;
     private String cnpj;
     private String representante;
+    @OneToMany(mappedBy = "cliente")
+    private List<Condominio> condominios;
 }

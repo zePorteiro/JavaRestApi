@@ -1,11 +1,13 @@
 package sptech.school.apizeporteiro.mapper;
 
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroCriacaoDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
 
 import javax.sound.sampled.Port;
+import java.util.List;
 
 public class PorteiroMapper {
 
@@ -20,32 +22,47 @@ public class PorteiroMapper {
         dto.setSenha(entity.getSenha());
 
         dto.setCondominio(toCondominioDto(entity.getCondominio()));
+        dto.setEntregas(toEntregaDto(entity.getEntregas()));
 
         return dto;
     }
 
-    private static PorteiroListagemDto.CondominioDto toCondominioDto(Condominio entity) {
-        if(entity == null) return null;
+    public static PorteiroListagemDto.CondominioDto toCondominioDto(Condominio entity) {
+        if (entity == null) return null;
 
-        PorteiroListagemDto.CondominioDto condominioDto = new PorteiroListagemDto.CondominioDto();
-        condominioDto.setId(entity.getId());
-        condominioDto.setNome(entity.getNome());
-        condominioDto.setCep(entity.getCep());
-        condominioDto.setLogradouro(entity.getLogradouro());
-        condominioDto.setNumero(entity.getNumero());
-        condominioDto.setBairro(entity.getBairro());
-        condominioDto.setCidade(entity.getCidade());
+        PorteiroListagemDto.CondominioDto dto = new PorteiroListagemDto.CondominioDto();
+        dto.setId(entity.getId());
+        dto.setNome(entity.getNome());
 
-        return condominioDto;
+        return dto;
+    }
+
+    public static List<PorteiroListagemDto.EntregaDto> toEntregaDto(List<Entrega> entities) {
+        return entities.stream().map(f -> {
+
+            PorteiroListagemDto.EntregaDto dto = new PorteiroListagemDto.EntregaDto();
+
+            dto.setId(f.getId());
+            dto.setTipoEntrega(f.getTipoEntrega());
+            dto.setDataRecebimentoPorteiro(f.getDataRecebimentoPorteiro());
+            dto.setDataRecebimentoMorador(f.getDataRecebimentoMorador());
+
+            return dto;
+
+        }).toList();
     }
 
     public static Porteiro toEntity(PorteiroCriacaoDto dto) {
-        if(dto == null) return null;
+        if (dto == null) return null;
 
         Porteiro porteiro = new Porteiro();
+
         porteiro.setNome(dto.getNome());
         porteiro.setRg(dto.getRg());
         porteiro.setSenha(dto.getSenha());
+        Condominio condominio = new Condominio();
+        condominio.setId(dto.getCondominioId());
+        porteiro.setCondominio(condominio);
 
         return porteiro;
     }

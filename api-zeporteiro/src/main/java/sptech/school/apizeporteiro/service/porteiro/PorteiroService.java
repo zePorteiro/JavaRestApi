@@ -17,7 +17,7 @@ public class PorteiroService {
     private final PorteiroRepository porteiroRepository;
 
     public void criar(PorteiroCriacaoDto porteiroCriacaoDto) {
-        final Porteiro novoPorteiro = PorteiroMapper.toEntity(porteiroCriacaoDto);
-        this.porteiroRepository.save(novoPorteiro);
+//        final Porteiro novoPorteiro = PorteiroMapper.toEntity(porteiroCriacaoDto);
+//        this.porteiroRepository.save(novoPorteiro);
     }
 }

@@ -1,14 +1,51 @@
 package sptech.school.apizeporteiro.mapper;
 
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteListagemDto;
+import sptech.school.apizeporteiro.service.condominio.dto.CondominioListagemDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClienteMapper {
+
+    public static ClienteListagemDto toDto(Cliente entity) {
+        if (entity == null) return null;
+
+        ClienteListagemDto dto = new ClienteListagemDto();
+        dto.setId(entity.getId());
+        dto.setEmail(entity.getEmail());
+        dto.setNome(entity.getNome());
+        dto.setCnpj(entity.getCnpj());
+        dto.setRepresentante(entity.getRepresentante());
+
+        // Mapeia os condomínios associados
+        dto.setCondominios(entity.getCondominios().stream()
+                .map(ClienteMapper::toCondominioDto)
+                .collect(Collectors.toList()));
+
+        return dto;
+    }
+
+    public static ClienteListagemDto.CondominioDto toCondominioDto(Condominio entity) {
+        if (entity == null) return null;
+
+        ClienteListagemDto.CondominioDto condominioDto = new ClienteListagemDto.CondominioDto();
+        condominioDto.setId(entity.getId());
+        condominioDto.setNome(entity.getNome());
+        condominioDto.setCep(entity.getCep());
+        condominioDto.setLogradouro(entity.getLogradouro());
+        condominioDto.setNumero(entity.getNumero());
+        condominioDto.setBairro(entity.getBairro());
+        condominioDto.setCidade(entity.getCidade());
+
+        return condominioDto;
+    }
+
     public static Cliente toEntity(ClienteCriacaoDto dto) {
         if (dto == null) {
             return null;
@@ -24,26 +61,10 @@ public class ClienteMapper {
         return cliente;
     }
 
-    public static ClienteListagemDto toDto(Cliente entidade) {
-        if (entidade == null) return null;
-
-        ClienteListagemDto listagemDto = new ClienteListagemDto();
-        listagemDto.setId(entidade.getId());
-        listagemDto.setEmail(entidade.getEmail());
-        listagemDto.setNome(entidade.getNome());
-        listagemDto.setCnpj(entidade.getCnpj());
-        listagemDto.setRepresentante(entidade.getRepresentante());
-
-        return listagemDto;
-    }
-
     public static List<ClienteListagemDto> toDto(List<Cliente> entidade) {
-        List<ClienteListagemDto> dtos = new ArrayList<>();
-        for (Cliente e : entidade) {
-            dtos.add(toDto(e));
-        }
-        return dtos;
+        return entidade.stream().map(ClienteMapper::toDto).collect(Collectors.toList());
     }
+
     public static Cliente of(ClienteCriacaoDto clienteCriacaoDto){
         Cliente cliente = new Cliente();
 

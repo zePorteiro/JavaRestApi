@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.morador.Morador;
+
+import java.util.List;
 
 @Entity
 @Table(
@@ -20,6 +24,7 @@ public class Apartamento {
     private boolean vazio;
 
     @ManyToOne
-    @JoinColumn(name = "fk_cliente")
-    private Cliente fkCliente;
+    private Condominio condominio;
+    @OneToMany(mappedBy = "apartamento")
+    private List<Morador> moradores;
 }

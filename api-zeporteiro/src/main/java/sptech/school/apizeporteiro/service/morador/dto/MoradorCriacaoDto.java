@@ -18,4 +18,5 @@ public class MoradorCriacaoDto {
     @NotBlank
     @NotNull
     private String numeroWhats3;
+    private Integer apartamentoId;
 }

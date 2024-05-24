@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
+import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
 import java.time.LocalDate;
 
@@ -18,15 +19,12 @@ public class Entrega {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
-    private String bloco;
-    private Integer numero;
+    private String tipoEntrega;
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
+    private Boolean recebido;
     @ManyToOne
-    @JoinColumn(name = "fk_porteiro")
-    private Porteiro fkPorteiro;
+    private Apartamento apartamento;
     @ManyToOne
-    @JoinColumn(name = "fk_apartamento")
-    private Apartamento fkApartamento;
+    private Porteiro porteiro;
 }

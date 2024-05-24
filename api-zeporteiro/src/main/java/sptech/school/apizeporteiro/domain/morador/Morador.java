@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,16 +19,10 @@ public class Morador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    @Column(unique = true)
     private String numeroWhats1;
-
-    @Column(unique = true)
     private String numeroWhats2;
-
-    @Column(unique = true)
     private String numeroWhats3;
 
     @ManyToOne
-    @JoinColumn(name = "fk_apartamento")
-    private Apartamento fkApartamento;
+    private Apartamento apartamento;
 }

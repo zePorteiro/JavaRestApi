@@ -15,4 +15,5 @@ public class PorteiroCriacaoDto {
     @NotBlank
     @NotNull
     private String senha;
+    private Integer condominioId;
 }

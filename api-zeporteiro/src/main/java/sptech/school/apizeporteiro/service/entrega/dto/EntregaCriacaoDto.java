@@ -16,5 +16,6 @@ public class EntregaCriacaoDto {
     @PastOrPresent(message = "A data de recebimento do morador deve ser no passado ou no presente")
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
-    private boolean recebido;
+    private Boolean recebido;
+    private Integer apartamentoId;
 }

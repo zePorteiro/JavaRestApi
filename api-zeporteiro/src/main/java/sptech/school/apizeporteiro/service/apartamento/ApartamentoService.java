@@ -20,7 +20,7 @@ public class ApartamentoService {
         for (ApartamentoListagemDto apartamentoDTO : apartamentosDTO) {
             Apartamento apartamento = new Apartamento();
             apartamento.setBloco(apartamentoDTO.getBloco());
-            apartamento.setVazio(apartamentoDTO.isVazio());
+            apartamento.setVazio(apartamentoDTO.getVazio());
             apartamento.setNumAp(apartamentoDTO.getNumAp());
             apartamentoRepository.save(apartamento);
             apartamentos.add(apartamento);

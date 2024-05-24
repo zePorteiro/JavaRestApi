@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.controller.CondominioController;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,4 +22,6 @@ public class Porteiro {
     private String senha;
     @ManyToOne
     private Condominio condominio;
+    @OneToMany(mappedBy = "porteiro")
+    private List<Entrega> entregas;
 }
