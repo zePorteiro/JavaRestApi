@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.morador.Morador;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public class Apartamento {
     private Condominio condominio;
     @OneToMany(mappedBy = "apartamento")
     private List<Morador> moradores;
+    @OneToMany(mappedBy = "apartamento")
+    private List<Entrega> entregas;
 }

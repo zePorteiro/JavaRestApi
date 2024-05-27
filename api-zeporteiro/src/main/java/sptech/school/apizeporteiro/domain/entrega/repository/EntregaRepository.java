@@ -6,6 +6,7 @@ import sptech.school.apizeporteiro.domain.entrega.Entrega;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EntregaRepository extends JpaRepository<Entrega, Integer> {
@@ -18,12 +19,7 @@ public interface EntregaRepository extends JpaRepository<Entrega, Integer> {
     // SELECT * FROM entrega WHERE dataRecebimentoMorador >= 'XPTO' AND dataRecebimentoMorador < 'XPTO'
     List<Entrega> findAllByDataRecebimentoMoradorAfter(LocalDate dataRecebimentoMorador);
 
-    // SELECT * FROM entrega WHERE recebido = 'true'
-//    List<Entrega> findByRecebidoTrue();
-
-    // SELECT * FROM entrega WHERE recebido = 'false'
-//    List<Entrega> findByRecebidoFalse();
-
-    // SELECT COUNT(*) FROM entrega WHERE fk_apartamento = XPTO
-//    Long countByFkApartamento(Integer apartamentoId);
+    List<Entrega> findByRecebidoFalse();
+    long countByDataRecebimentoMoradorAfter(LocalDate date);
+    Optional<Entrega> findTopByOrderByDataRecebimentoMoradorDesc();
 }

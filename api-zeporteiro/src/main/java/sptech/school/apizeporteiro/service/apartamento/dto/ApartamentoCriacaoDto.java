@@ -7,13 +7,11 @@ import lombok.Data;
 @Data
 public class ApartamentoCriacaoDto {
     @NotBlank
-    @NotNull
     private String bloco;
     @NotBlank
-    @NotNull
     private String numAp;
-    @NotBlank
     @NotNull
-    private boolean vazio;
+    private Boolean vazio;
+    @NotNull
     private Integer condominioId;
 }

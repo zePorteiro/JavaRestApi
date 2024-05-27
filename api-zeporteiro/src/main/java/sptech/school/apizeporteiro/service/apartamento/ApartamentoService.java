@@ -4,42 +4,70 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.apartamento.repository.ApartamentoRepository;
+import sptech.school.apizeporteiro.mapper.ApartamentoMapper;
+import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoCriacaoDto;
 import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoListagemDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ApartamentoService {
+
     private final ApartamentoRepository apartamentoRepository;
 
-    public List<ApartamentoListagemDto> salvarApartamentos(List<ApartamentoListagemDto> apartamentosDTO) {
-        List<Apartamento> apartamentos = new ArrayList<>();
+    public List<ApartamentoListagemDto> salvarApartamentos(List<ApartamentoCriacaoDto> apartamentosDTO) {
+        List<Apartamento> apartamentos = apartamentosDTO.stream()
+                .map(ApartamentoMapper::toEntity)
+                .collect(Collectors.toList());
 
-        for (ApartamentoListagemDto apartamentoDTO : apartamentosDTO) {
-            Apartamento apartamento = new Apartamento();
-            apartamento.setBloco(apartamentoDTO.getBloco());
-            apartamento.setVazio(apartamentoDTO.getVazio());
-            apartamento.setNumAp(apartamentoDTO.getNumAp());
-            apartamentoRepository.save(apartamento);
-            apartamentos.add(apartamento);
-        }
-        return convertToDTOs(apartamentos);
+        List<Apartamento> apartamentosSalvos = apartamentoRepository.saveAll(apartamentos);
+        return ApartamentoMapper.toDtoList(apartamentosSalvos);
     }
 
-    private List<ApartamentoListagemDto> convertToDTOs(List<Apartamento> apartamentos) {
-        List<ApartamentoListagemDto> dtos = new ArrayList<>();
+    public ApartamentoListagemDto salvarApartamento(ApartamentoCriacaoDto apartamentoDTO) {
+        Apartamento apartamento = ApartamentoMapper.toEntity(apartamentoDTO);
+        Apartamento apartamentoSalvo = apartamentoRepository.save(apartamento);
+        return ApartamentoMapper.toDto(apartamentoSalvo);
+    }
 
-        for (Apartamento apartamento : apartamentos) {
-            ApartamentoListagemDto dto = new ApartamentoListagemDto();
-            dto.setId(apartamento.getId());
-            dto.setBloco(apartamento.getBloco());
-            dto.setNumAp(apartamento.getNumAp());
-            dto.setVazio(apartamento.isVazio());
-            dtos.add(dto);
+    public ApartamentoListagemDto atualizarVazio(Integer id, boolean vazio) {
+        Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(id);
+        if (optionalApartamento.isPresent()) {
+            Apartamento apartamento = optionalApartamento.get();
+            apartamento.setVazio(vazio);
+            Apartamento apartamentoAtualizado = apartamentoRepository.save(apartamento);
+            return ApartamentoMapper.toDto(apartamentoAtualizado);
+        } else {
+            throw new RuntimeException("Apartamento não encontrado"); // Ajuste isso conforme suas exceções
         }
+    }
 
-        return dtos;
+    public void excluirApartamento(Integer id) {
+        if (apartamentoRepository.existsById(id)) {
+            apartamentoRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Apartamento não encontrado"); // Ajuste isso conforme suas exceções
+        }
+    }
+
+    public List<ApartamentoListagemDto.MoradorDto> listarMoradoresPorApartamento(Integer id) {
+        Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(id);
+        if (optionalApartamento.isPresent()) {
+            Apartamento apartamento = optionalApartamento.get();
+            return apartamento.getMoradores().stream()
+                    .map(ApartamentoMapper::toDtoMorador)
+                    .collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("Apartamento não encontrado");
+        }
+    }
+
+    public List<ApartamentoListagemDto> listarTodosApartamentos() {
+        List<Apartamento> apartamentos = apartamentoRepository.findAll();
+        return ApartamentoMapper.toDtoList(apartamentos);
     }
 }

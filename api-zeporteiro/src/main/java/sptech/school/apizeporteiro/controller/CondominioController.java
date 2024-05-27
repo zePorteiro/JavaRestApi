@@ -2,7 +2,9 @@ package sptech.school.apizeporteiro.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.condominio.repository.CondominioRepository;
@@ -11,36 +13,42 @@ import sptech.school.apizeporteiro.service.condominio.CondominioService;
 import sptech.school.apizeporteiro.service.condominio.dto.CondominioCriacaoDto;
 import sptech.school.apizeporteiro.service.condominio.dto.CondominioListagemDto;
 
+import java.util.List;
+
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/condominios")
+@RequiredArgsConstructor
 public class CondominioController {
-    private final CondominioRepository condominioRepository;
     private final CondominioService condominioService;
+
     @PostMapping
-    public ResponseEntity<CondominioListagemDto> cadastrarCondominio
-            (@RequestBody @Valid CondominioCriacaoDto novoCondominio) {
-        Condominio condominio = CondominioMapper.toEntity(novoCondominio);
-
-        Condominio condominioSalvo = condominioRepository.save(condominio);
-
-        CondominioListagemDto listagemCondominio = CondominioMapper.toDto(condominioSalvo);
-
-        return ResponseEntity.status(201).body(listagemCondominio);
+    public ResponseEntity<Void> criar(@RequestBody CondominioCriacaoDto condominioCriacaoDto) {
+        condominioService.criar(condominioCriacaoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CondominioListagemDto> atualizarCondominio(
-            @PathVariable Integer id,
-            @Valid @RequestBody CondominioCriacaoDto condominio
-    ) {
-        CondominioListagemDto condominioAtualizado = condominioService.atualizarCondominio(id, condominio);
-        return ResponseEntity.ok(condominioAtualizado);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> atualizar(@RequestBody CondominioCriacaoDto condominioCriacaoDto, @PathVariable int id) {
+        condominioService.atualizar(condominioCriacaoDto, id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCondominio(@PathVariable Integer id) {
-        condominioService.excluirCondominio(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> excluir(@PathVariable int id) {
+        condominioService.excluir(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CondominioListagemDto> listarUmPorId(@PathVariable int id) {
+        CondominioListagemDto condominio = condominioService.listarUmPorId(id);
+        return ResponseEntity.ok(condominio);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CondominioListagemDto>> listarTodos() {
+        List<CondominioListagemDto> condominios = condominioService.listarTodos();
+        return ResponseEntity.ok(condominios);
     }
 }
+

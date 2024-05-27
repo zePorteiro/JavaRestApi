@@ -22,7 +22,6 @@ public class CondominioListagemDto {
         private Integer id;
         private String email;
         private String nome;
-        private String senha;
         private String cnpj;
         private String representante;
     }

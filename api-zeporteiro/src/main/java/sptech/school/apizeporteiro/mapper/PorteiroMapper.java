@@ -1,8 +1,12 @@
 package sptech.school.apizeporteiro.mapper;
 
+import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
+import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
+import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
+import sptech.school.apizeporteiro.service.porteiro.autenticacao.dto.PorteiroTokenDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroCriacaoDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
 
@@ -65,5 +69,26 @@ public class PorteiroMapper {
         porteiro.setCondominio(condominio);
 
         return porteiro;
+    }
+
+    public static Porteiro of(PorteiroCriacaoDto dto){
+        Porteiro porteiro = new Porteiro();
+
+        porteiro.setNome(dto.getNome());
+        porteiro.setRg(dto.getRg());
+        porteiro.setSenha(dto.getSenha());
+
+        return porteiro;
+    }
+
+    public static PorteiroTokenDto of(Porteiro porteiro, String token){
+        PorteiroTokenDto tokenDto = new PorteiroTokenDto();
+
+        tokenDto.setUserId(porteiro.getId());
+        tokenDto.setNome(porteiro.getNome());
+        tokenDto.setRg(porteiro.getRg());
+        tokenDto.setToken(token);
+
+        return tokenDto;
     }
 }

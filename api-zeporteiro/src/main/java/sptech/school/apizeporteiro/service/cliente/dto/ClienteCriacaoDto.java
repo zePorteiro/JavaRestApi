@@ -9,9 +9,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class ClienteCriacaoDto {
     @Email
     private String email;
-    @Size(min = 3, max = 20)
     private String nome;
-    @Size(min = 6, max = 20)
     private String senha;
     @CNPJ
     private String cnpj;

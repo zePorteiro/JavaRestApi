@@ -1,25 +1,54 @@
 package sptech.school.apizeporteiro.controller;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.service.apartamento.ApartamentoService;
+import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoCriacaoDto;
 import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoListagemDto;
 
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/apartamentos")
 public class ApartamentoController {
-    private final ApartamentoService apartamentoService;
 
-    @PostMapping
-    public ResponseEntity<List<ApartamentoListagemDto>> salvarApartamentos(@RequestBody List<ApartamentoListagemDto> apartamentosDTO) {
-        List<ApartamentoListagemDto> apartamentosListagemDTO = apartamentoService.salvarApartamentos(apartamentosDTO);
-        return ResponseEntity.status(201).body(apartamentosListagemDTO);
+    @Autowired
+    private ApartamentoService apartamentoService;
+
+    @PostMapping("/salvar-lote")
+    public ResponseEntity<List<ApartamentoListagemDto>> salvarApartamentos(@RequestBody List<ApartamentoCriacaoDto> apartamentosDTO) {
+        List<ApartamentoListagemDto> apartamentosSalvos = apartamentoService.salvarApartamentos(apartamentosDTO);
+        return ResponseEntity.ok(apartamentosSalvos);
+    }
+
+    @PostMapping("/salvar")
+    public ResponseEntity<ApartamentoListagemDto> salvarApartamento(@RequestBody ApartamentoCriacaoDto apartamentoDTO) {
+        ApartamentoListagemDto apartamentoSalvo = apartamentoService.salvarApartamento(apartamentoDTO);
+        return ResponseEntity.ok(apartamentoSalvo);
+    }
+
+    @PutMapping("/{id}/atualizar-vazio/{vazio}")
+    public ResponseEntity<ApartamentoListagemDto> atualizarVazio(@PathVariable Integer id, @PathVariable boolean vazio) {
+        ApartamentoListagemDto apartamentoAtualizado = apartamentoService.atualizarVazio(id, vazio);
+        return ResponseEntity.ok(apartamentoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirApartamento(@PathVariable Integer id) {
+        apartamentoService.excluirApartamento(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/moradores")
+    public ResponseEntity<List<ApartamentoListagemDto.MoradorDto>> listarMoradoresPorApartamento(@PathVariable Integer id) {
+        List<ApartamentoListagemDto.MoradorDto> moradores = apartamentoService.listarMoradoresPorApartamento(id);
+        return ResponseEntity.ok(moradores);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ApartamentoListagemDto>> listarTodosApartamentos() {
+        List<ApartamentoListagemDto> apartamentos = apartamentoService.listarTodosApartamentos();
+        return ResponseEntity.ok(apartamentos);
     }
 }

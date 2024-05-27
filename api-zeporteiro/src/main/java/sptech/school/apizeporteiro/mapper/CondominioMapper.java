@@ -43,7 +43,7 @@ public class CondominioMapper {
         clienteDto.setId(entity.getId());
         clienteDto.setEmail(entity.getEmail());
         clienteDto.setNome(entity.getNome());
-        clienteDto.setSenha(entity.getSenha());
+        // Removido o campo senha
         clienteDto.setCnpj(entity.getCnpj());
         clienteDto.setRepresentante(entity.getRepresentante());
 
@@ -88,3 +88,4 @@ public class CondominioMapper {
                 .collect(Collectors.toList());
     }
 }
+
