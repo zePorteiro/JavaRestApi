@@ -48,15 +48,8 @@ public class MoradorService {
         moradorRepository.save(morador);
     }
 
-    public List<MoradorListagemDto> listarPorCondominio(int condominioId) {
-        List<Morador> moradores = moradorRepository.findByFkCondominio(condominioId);
-        return moradores.stream()
-                .map(MoradorMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     public List<MoradorListagemDto> listarPorApartamento(int apartamentoId) {
-        List<Morador> moradores = moradorRepository.findByFkApartamento(apartamentoId);
+        List<Morador> moradores = moradorRepository.findByApartamentoId(apartamentoId);
         return moradores.stream()
                 .map(MoradorMapper::toDto)
                 .collect(Collectors.toList());

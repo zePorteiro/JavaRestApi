@@ -16,12 +16,6 @@ import java.util.List;
 public class MoradorController {
     private final MoradorService moradorService;
 
-    @GetMapping("/condominio/{fkCondominio}")
-    public ResponseEntity<List<MoradorListagemDto>> listarPorCondominio(@PathVariable int fkCondominio) {
-        List<MoradorListagemDto> moradores = moradorService.listarPorCondominio(fkCondominio);
-        return ResponseEntity.ok(moradores);
-    }
-
     @GetMapping("/apartamento/{fkApartamento}")
     public ResponseEntity<List<MoradorListagemDto>> listarPorApartamento(@PathVariable int fkApartamento) {
         List<MoradorListagemDto> moradores = moradorService.listarPorApartamento(fkApartamento);

@@ -10,9 +10,6 @@ import java.util.List;
 
 @Repository
 public interface MoradorRepository extends JpaRepository<Morador, Integer> {
-    List<Morador> findByFkApartamento(int condominioId);
-    @Query("SELECT m FROM Morador m JOIN m.apartamento a JOIN a.condominio c WHERE c.id = :condominioId")
-    List<Morador> findByFkCondominio(@Param("condominioId") int condominioId);
-
+    List<Morador> findByApartamentoId(int apartamentoId);
 }
 
