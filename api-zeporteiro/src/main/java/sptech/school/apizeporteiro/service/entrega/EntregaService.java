@@ -36,8 +36,8 @@ public class EntregaService {
         Entrega entregaSalva = entregaRepository.save(entrega);
         EntregaListagemDto listagemEntrega = EntregaMapper.toDto(entregaSalva);
 
-        Integer apartamentoId = novaEntregaDto.getApartamentoId();
-        Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(apartamentoId);
+        Integer fkApartamento = novaEntregaDto.getFkApartamento();
+        Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(fkApartamento);
         if (optionalApartamento.isPresent()) {
             Apartamento apartamento = optionalApartamento.get();
             Morador morador = apartamento.getMoradores().get(0);  // Supondo que o primeiro morador seja o principal

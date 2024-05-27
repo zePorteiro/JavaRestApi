@@ -17,5 +17,5 @@ public class EntregaCriacaoDto {
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
     private Boolean recebido;
-    private Integer apartamentoId;
+    private Integer fkApartamento;
 }

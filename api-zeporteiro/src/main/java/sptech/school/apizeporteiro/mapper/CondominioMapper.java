@@ -74,7 +74,7 @@ public class CondominioMapper {
         condominio.setCidade(dto.getCidade());
 
         Cliente cliente = new Cliente();
-        cliente.setId(dto.getClienteId());
+        cliente.setId(dto.getFkCliente());
         condominio.setCliente(cliente);
 
         return condominio;

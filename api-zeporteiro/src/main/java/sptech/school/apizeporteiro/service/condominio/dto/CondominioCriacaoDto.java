@@ -11,5 +11,5 @@ public class CondominioCriacaoDto {
     private String numero;
     private String bairro;
     private String cidade;
-    private Integer clienteId;
+    private Integer fkCliente;
 }

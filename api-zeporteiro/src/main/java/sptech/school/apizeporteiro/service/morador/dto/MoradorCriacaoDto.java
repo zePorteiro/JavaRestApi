@@ -6,17 +6,9 @@ import lombok.Data;
 
 @Data
 public class MoradorCriacaoDto {
-    @NotBlank
-    @NotNull
     private String nome;
-    @NotBlank
-    @NotNull
     private String numeroWhats1;
-    @NotBlank
-    @NotNull
     private String numeroWhats2;
-    @NotBlank
-    @NotNull
     private String numeroWhats3;
-    private Integer apartamentoId;
+    private Integer fkApartamento;
 }

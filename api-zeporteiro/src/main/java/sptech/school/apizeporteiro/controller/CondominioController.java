@@ -30,13 +30,13 @@ public class CondominioController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(@RequestBody CondominioCriacaoDto condominioCriacaoDto, @PathVariable int id) {
         condominioService.atualizar(condominioCriacaoDto, id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable int id) {
         condominioService.excluir(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{id}")

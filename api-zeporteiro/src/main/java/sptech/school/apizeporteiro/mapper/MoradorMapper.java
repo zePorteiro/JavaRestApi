@@ -1,11 +1,15 @@
 package sptech.school.apizeporteiro.mapper;
 
+import org.hibernate.boot.registry.classloading.spi.ClassLoadingException;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MoradorMapper {
 
@@ -45,11 +49,14 @@ public class MoradorMapper {
         morador.setNumeroWhats2(dto.getNumeroWhats2());
         morador.setNumeroWhats3(dto.getNumeroWhats3());
 
-        // Mapeia o ID do apartamento
-        Apartamento apartamento = new Apartamento();
-        apartamento.setId(dto.getApartamentoId());
-        morador.setApartamento(apartamento);
-
         return morador;
+    }
+
+    public static List<Morador> toEntityList(List<MoradorCriacaoDto> dtos) {
+        if (dtos == null) return null;
+
+        return dtos.stream()
+                .map(MoradorMapper::toEntity)
+                .collect(Collectors.toList());
     }
 }

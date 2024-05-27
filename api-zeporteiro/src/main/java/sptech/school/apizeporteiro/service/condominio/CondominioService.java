@@ -32,7 +32,7 @@ public class CondominioService {
     public void criar(CondominioCriacaoDto condominioCriacaoDto) {
         Condominio condominio = CondominioMapper.toEntity(condominioCriacaoDto);
 
-        Cliente cliente = clienteRepository.findById(condominioCriacaoDto.getClienteId())
+        Cliente cliente = clienteRepository.findById(condominioCriacaoDto.getFkCliente())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
 
         condominio.setCliente(cliente);

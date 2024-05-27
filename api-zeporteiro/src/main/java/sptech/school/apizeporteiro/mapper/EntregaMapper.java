@@ -21,7 +21,7 @@ public class EntregaMapper {
 
         // Mapeia o ID do apartamento
         Apartamento apartamento = new Apartamento();
-        apartamento.setId(dto.getApartamentoId());
+        apartamento.setId(dto.getFkApartamento());
         entrega.setApartamento(apartamento);
 
         return entrega;
