@@ -1,6 +1,8 @@
 package sptech.school.apizeporteiro.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.service.apartamento.ApartamentoService;
@@ -22,14 +24,16 @@ public class ApartamentoController {
         return ResponseEntity.ok(apartamentosSalvos);
     }
 
-    @PostMapping("/salvar")
-    public ResponseEntity<ApartamentoListagemDto> salvarApartamento(@RequestBody ApartamentoCriacaoDto apartamentoDTO) {
-        ApartamentoListagemDto apartamentoSalvo = apartamentoService.salvarApartamento(apartamentoDTO);
-        return ResponseEntity.ok(apartamentoSalvo);
+    @PostMapping("/{condominioId}")
+    public ResponseEntity<Void> cadastrarApartamento(@RequestBody ApartamentoCriacaoDto apartamentoCriacaoDto,
+                                                     @PathVariable Integer condominioId) {
+        apartamentoService.cadastrarApartamento(apartamentoCriacaoDto, condominioId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}/atualizar-vazio/{vazio}")
-    public ResponseEntity<ApartamentoListagemDto> atualizarVazio(@PathVariable Integer id, @PathVariable boolean vazio) {
+    public ResponseEntity<ApartamentoListagemDto> atualizarVazio(@PathVariable Integer id,
+                                                                 @PathVariable boolean vazio) {
         ApartamentoListagemDto apartamentoAtualizado = apartamentoService.atualizarVazio(id, vazio);
         return ResponseEntity.ok(apartamentoAtualizado);
     }
