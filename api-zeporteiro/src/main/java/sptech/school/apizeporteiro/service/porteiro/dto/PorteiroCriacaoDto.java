@@ -6,14 +6,8 @@ import lombok.Data;
 
 @Data
 public class PorteiroCriacaoDto {
-    @NotBlank
-    @NotNull
     private String nome;
-    @NotBlank
-    @NotNull
     private String rg;
-    @NotBlank
-    @NotNull
     private String senha;
     private Integer condominioId;
 }

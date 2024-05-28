@@ -10,9 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface PorteiroRepository extends JpaRepository<Porteiro, Integer> {
-
-    // SELECT * FROM porteiro WHERE nome LIKE '%XPTO%'
-    List<Porteiro> findByNomeIgnoreCase(String nome);
-    // Utilizado no JWT
-    Optional<Porteiro> findByRg(String rg);
+    List<Porteiro> findByCondominioId(Integer condominioId);
 }
