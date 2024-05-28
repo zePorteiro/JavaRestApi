@@ -31,9 +31,7 @@ public class MoradorService {
         Apartamento apartamento = apartamentoRepository.findById(fkApartamento)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
 
-        List<Morador> moradores = MoradorMapper.toEntityList(moradorCriacaoDtos).stream()
-                .peek(morador -> morador.setApartamento(apartamento))
-                .collect(Collectors.toList());
+        List<Morador> moradores = MoradorMapper.toEntityList(moradorCriacaoDtos, apartamento);
 
         moradorRepository.saveAll(moradores);
     }
@@ -42,8 +40,7 @@ public class MoradorService {
         Apartamento apartamento = apartamentoRepository.findById(fkApartamento)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
 
-        Morador morador = MoradorMapper.toEntity(moradorCriacaoDto);
-        morador.setApartamento(apartamento);
+        Morador morador = MoradorMapper.toEntity(moradorCriacaoDto, apartamento);
 
         moradorRepository.save(morador);
     }
@@ -54,4 +51,30 @@ public class MoradorService {
                 .map(MoradorMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public void updateMorador(Integer id, MoradorCriacaoDto moradorCriacaoDto) {
+        Morador moradorExistente = moradorRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Morador não encontrado"));
+
+        moradorExistente.setNome(moradorCriacaoDto.getNome());
+        moradorExistente.setNumeroWhats1(moradorCriacaoDto.getNumeroWhats1());
+        moradorExistente.setNumeroWhats2(moradorCriacaoDto.getNumeroWhats2());
+        moradorExistente.setNumeroWhats3(moradorCriacaoDto.getNumeroWhats3());
+
+        Apartamento apartamento = apartamentoRepository.findById(moradorCriacaoDto.getFkApartamento())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
+
+        moradorExistente.setApartamento(apartamento);
+
+        moradorRepository.save(moradorExistente);
+    }
+
+    public void deleteMorador(Integer id) {
+        if (!moradorRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Morador não encontrado");
+        }
+        moradorRepository.deleteById(id);
+    }
 }
+
+

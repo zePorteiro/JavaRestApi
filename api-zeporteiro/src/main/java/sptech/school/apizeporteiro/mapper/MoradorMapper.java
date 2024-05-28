@@ -8,6 +8,8 @@ import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,7 @@ public class MoradorMapper {
         return apartamentoDto;
     }
 
-    public static Morador toEntity(MoradorCriacaoDto dto) {
+    public static Morador toEntity(MoradorCriacaoDto dto, Apartamento apartamento) {
         if (dto == null) return null;
 
         Morador morador = new Morador();
@@ -48,15 +50,16 @@ public class MoradorMapper {
         morador.setNumeroWhats1(dto.getNumeroWhats1());
         morador.setNumeroWhats2(dto.getNumeroWhats2());
         morador.setNumeroWhats3(dto.getNumeroWhats3());
+        morador.setApartamento(apartamento);
 
         return morador;
     }
 
-    public static List<Morador> toEntityList(List<MoradorCriacaoDto> dtos) {
-        if (dtos == null) return null;
+    public static List<Morador> toEntityList(List<MoradorCriacaoDto> dtos, Apartamento apartamento) {
+        if (dtos == null) return Collections.emptyList();
 
         return dtos.stream()
-                .map(MoradorMapper::toEntity)
+                .map(dto -> toEntity(dto, apartamento))
                 .collect(Collectors.toList());
     }
 }

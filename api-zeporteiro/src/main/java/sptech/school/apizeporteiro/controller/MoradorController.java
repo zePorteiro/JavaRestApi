@@ -16,21 +16,33 @@ import java.util.List;
 public class MoradorController {
     private final MoradorService moradorService;
 
-    @GetMapping("/apartamento/{fkApartamento}")
-    public ResponseEntity<List<MoradorListagemDto>> listarPorApartamento(@PathVariable int fkApartamento) {
-        List<MoradorListagemDto> moradores = moradorService.listarPorApartamento(fkApartamento);
-        return ResponseEntity.ok(moradores);
+    @PostMapping("/apartamento/{fkApartamento}")
+    public ResponseEntity<Void> cadastrarMorador(@RequestBody MoradorCriacaoDto moradorCriacaoDto, @PathVariable Integer fkApartamento) {
+        moradorService.cadastrarMorador(moradorCriacaoDto, fkApartamento);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/apartamento/{fkApartamento}")
-    public ResponseEntity<Void> cadastrarMoradores(@PathVariable Integer fkApartamento, @RequestBody List<MoradorCriacaoDto> moradorCriacaoDtos) {
+    @PostMapping("/lista/apartamento/{fkApartamento}")
+    public ResponseEntity<Void> cadastrarMoradores(@RequestBody List<MoradorCriacaoDto> moradorCriacaoDtos, @PathVariable Integer fkApartamento) {
         moradorService.cadastrarMoradores(moradorCriacaoDtos, fkApartamento);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/apartamento/{fkApartamento}/single")
-    public ResponseEntity<Void> cadastrarMorador(@PathVariable Integer fkApartamento, @RequestBody MoradorCriacaoDto moradorCriacaoDto) {
-        moradorService.cadastrarMorador(moradorCriacaoDto, fkApartamento);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @GetMapping("/apartamento/{apartamentoId}")
+    public ResponseEntity<List<MoradorListagemDto>> listarPorApartamento(@PathVariable int apartamentoId) {
+        List<MoradorListagemDto> moradores = moradorService.listarPorApartamento(apartamentoId);
+        return ResponseEntity.ok(moradores);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> atualizarMorador(@PathVariable Integer id, @RequestBody MoradorCriacaoDto moradorCriacaoDto) {
+        moradorService.updateMorador(id, moradorCriacaoDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarMorador(@PathVariable Integer id) {
+        moradorService.deleteMorador(id);
+        return ResponseEntity.noContent().build();
     }
 }
