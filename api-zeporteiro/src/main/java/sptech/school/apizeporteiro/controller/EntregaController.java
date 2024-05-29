@@ -1,38 +1,49 @@
-package sptech.school.apizeporteiro.controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sptech.school.apizeporteiro.service.entrega.EntregaService;
-import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/entregas")
+@RequiredArgsConstructor
 public class EntregaController {
 
-    @Autowired
-    private EntregaService entregaService;
+    private final EntregaService entregaService;
+
+    @PostMapping
+    public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@RequestBody EntregaCriacaoDto novaEntregaDto) {
+        EntregaListagemDto entregaListagemDto = entregaService.cadastrarEntrega(novaEntregaDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(entregaListagemDto);
+    }
 
     @GetMapping("/pendentes")
     public ResponseEntity<List<EntregaListagemDto>> listarPendentes() {
-        return ResponseEntity.ok(entregaService.listarPendentes());
+        List<EntregaListagemDto> pendentes = entregaService.listarPendentes();
+        return ResponseEntity.ok(pendentes);
     }
 
     @GetMapping("/total-ultimo-mes")
     public ResponseEntity<Long> totalEntregasUltimoMes() {
-        return ResponseEntity.ok(entregaService.totalEntregasUltimoMes());
+        long total = entregaService.totalEntregasUltimoMes();
+        return ResponseEntity.ok(total);
     }
 
     @GetMapping("/ultima")
     public ResponseEntity<Optional<EntregaListagemDto>> ultimaEntrega() {
-        return ResponseEntity.ok(entregaService.ultimaEntrega());
+        Optional<EntregaListagemDto> ultimaEntrega = entregaService.ultimaEntrega();
+        return ResponseEntity.ok(ultimaEntrega);
     }
 
-    @PutMapping("/registrar-recebida/{entregaId}")
+    @PutMapping("/{entregaId}/recebida")
     public ResponseEntity<EntregaListagemDto> registrarEntregaRecebida(@PathVariable Integer entregaId) {
-        return ResponseEntity.ok(entregaService.registrarEntregaRecebida(entregaId));
+        EntregaListagemDto entregaListagemDto = entregaService.registrarEntregaRecebida(entregaId);
+        return ResponseEntity.ok(entregaListagemDto);
+    }
+
+    @GetMapping("/condominio/{condominioId}/csv")
+    public ResponseEntity<Resource> gerarCsvDeEntregasPorCondominio(@PathVariable Integer condominioId) {
+        return entregaService.gerarCsvDeEntregasPorCondominio(condominioId);
     }
 }

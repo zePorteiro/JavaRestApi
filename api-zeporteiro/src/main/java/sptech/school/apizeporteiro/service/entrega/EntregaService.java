@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.Queue;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class EntregaService {
 
     private final EntregaRepository entregaRepository;
     private final ApartamentoRepository apartamentoRepository;
+    private final CondominioRepository condominioRepository;
 
     public EntregaListagemDto cadastrarEntrega(EntregaCriacaoDto novaEntregaDto) {
         Entrega entrega = EntregaMapper.toEntity(novaEntregaDto);
@@ -40,16 +43,28 @@ public class EntregaService {
         Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(fkApartamento);
         if (optionalApartamento.isPresent()) {
             Apartamento apartamento = optionalApartamento.get();
-            Morador morador = apartamento.getMoradores().get(0);  // Supondo que o primeiro morador seja o principal
-            String numeroWhatsApp = morador.getNumeroWhats1();
-            LocalDate dataEntregaLocalDate = entregaSalva.getDataRecebimentoPorteiro();
-            Date dataEntregaDate = Date.from(dataEntregaLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            enviarMensagemWhatsApp(numeroWhatsApp, dataEntregaDate);
+            List<Morador> moradores = apartamento.getMoradores();
+
+            if (!moradores.isEmpty()) {
+                Morador morador = moradores.get(0);
+
+                // Criando a fila de números de WhatsApp
+                Queue<String> numerosWhatsApp = new LinkedList<>();
+                if (morador.getNumeroWhats1() != null) numerosWhatsApp.add(morador.getNumeroWhats1());
+                if (morador.getNumeroWhats2() != null) numerosWhatsApp.add(morador.getNumeroWhats2());
+                if (morador.getNumeroWhats3() != null) numerosWhatsApp.add(morador.getNumeroWhats3());
+
+                LocalDate dataEntregaLocalDate = entregaSalva.getDataRecebimentoPorteiro();
+                Date dataEntregaDate = Date.from(dataEntregaLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+                // Processando a fila de números de WhatsApp
+                while (!numerosWhatsApp.isEmpty()) {
+                    String numeroWhatsApp = numerosWhatsApp.poll();
+                    enviarMensagemWhatsApp(numeroWhatsApp, dataEntregaDate);
+                }
+            }
         }
-
-        return listagemEntrega;
     }
-
     private void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime twoMinutesLater = now.plusMinutes(2);
@@ -94,7 +109,43 @@ public class EntregaService {
             entrega = entregaRepository.save(entrega);
             return EntregaMapper.toDto(entrega);
         } else {
-            throw new RuntimeException("Entrega não encontrada"); // Ajuste isso conforme suas exceções
+            throw new RuntimeException("Entrega não encontrada");
         }
+    }
+
+    public ResponseEntity<Resource> gerarCsvDeEntregasPorCondominio(Integer condominioId) {
+        Condominio condominio = condominioRepository.findById(condominioId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Condomínio não encontrado"));
+
+        List<Apartamento> apartamentos = condominio.getApartamentos();
+        List<Entrega> entregas = apartamentos.stream()
+                .flatMap(apartamento -> apartamento.getEntregas().stream())
+                .collect(Collectors.toList());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos))) {
+            String[] header = {"ID", "Tipo Entrega", "Data Recebimento Porteiro", "Data Recebimento Morador", "Apartamento"};
+            writer.writeNext(header);
+
+            for (Entrega entrega : entregas) {
+                String[] data = {
+                        entrega.getId().toString(),
+                        entrega.getTipoEntrega(),
+                        entrega.getDataRecebimentoPorteiro().toString(),
+                        entrega.getDataRecebimentoMorador() != null ? entrega.getDataRecebimentoMorador().toString() : "",
+                        entrega.getApartamento().getId().toString()
+                };
+                writer.writeNext(data);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao gerar CSV", e);
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(baos.toByteArray());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=entregas.csv")
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(resource);
     }
 }
