@@ -1,7 +1,15 @@
-import org.springframework.core.io.Resource;
+package sptech.school.apizeporteiro.controller;
+
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.apizeporteiro.service.entrega.EntregaService;
+import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
+import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +51,7 @@ public class EntregaController {
     }
 
     @GetMapping("/condominio/{condominioId}/csv")
-    public ResponseEntity<Resource> gerarCsvDeEntregasPorCondominio(@PathVariable Integer condominioId) {
-        return entregaService.gerarCsvDeEntregasPorCondominio(condominioId);
+    public void gerarCsvDeEntregasPorCondominio(HttpServletResponse response, @PathVariable Integer condominioId) throws IOException, IOException {
+        entregaService.gerarCsvDeEntregasPorCondominio(response, condominioId);
     }
 }

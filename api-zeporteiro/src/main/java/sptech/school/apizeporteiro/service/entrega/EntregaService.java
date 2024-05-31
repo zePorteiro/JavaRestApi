@@ -1,13 +1,16 @@
 package sptech.school.apizeporteiro.service.entrega;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.apartamento.repository.ApartamentoRepository;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.condominio.repository.CondominioRepository;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.entrega.repository.EntregaRepository;
 import sptech.school.apizeporteiro.domain.morador.Morador;
@@ -15,6 +18,10 @@ import sptech.school.apizeporteiro.mapper.EntregaMapper;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -64,7 +71,10 @@ public class EntregaService {
                 }
             }
         }
+
+        return listagemEntrega;
     }
+
     private void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime twoMinutesLater = now.plusMinutes(2);
@@ -113,7 +123,7 @@ public class EntregaService {
         }
     }
 
-    public ResponseEntity<Resource> gerarCsvDeEntregasPorCondominio(Integer condominioId) {
+    public void gerarCsvDeEntregasPorCondominio(HttpServletResponse response, Integer condominioId) throws IOException, IOException {
         Condominio condominio = condominioRepository.findById(condominioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Condomínio não encontrado"));
 
@@ -122,30 +132,22 @@ public class EntregaService {
                 .flatMap(apartamento -> apartamento.getEntregas().stream())
                 .collect(Collectors.toList());
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos))) {
-            String[] header = {"ID", "Tipo Entrega", "Data Recebimento Porteiro", "Data Recebimento Morador", "Apartamento"};
-            writer.writeNext(header);
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=entregas.csv");
 
-            for (Entrega entrega : entregas) {
-                String[] data = {
-                        entrega.getId().toString(),
-                        entrega.getTipoEntrega(),
-                        entrega.getDataRecebimentoPorteiro().toString(),
-                        entrega.getDataRecebimentoMorador() != null ? entrega.getDataRecebimentoMorador().toString() : "",
-                        entrega.getApartamento().getId().toString()
-                };
-                writer.writeNext(data);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar CSV", e);
+        PrintWriter writer = response.getWriter();
+        writer.println("ID, Tipo Entrega, Data Recebimento Porteiro, Data Recebimento Morador, Apartamento");
+
+        for (Entrega entrega : entregas) {
+            writer.println(String.format("%d, %s, %s, %s, %d",
+                    entrega.getId(),
+                    entrega.getTipoEntrega(),
+                    entrega.getDataRecebimentoPorteiro(),
+                    entrega.getDataRecebimentoMorador() != null ? entrega.getDataRecebimentoMorador() : "",
+                    entrega.getApartamento().getId()));
         }
 
-        ByteArrayResource resource = new ByteArrayResource(baos.toByteArray());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=entregas.csv")
-                .contentType(MediaType.parseMediaType("application/csv"))
-                .body(resource);
+        writer.flush();
+        writer.close();
     }
 }
