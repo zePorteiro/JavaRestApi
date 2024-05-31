@@ -8,6 +8,7 @@ import sptech.school.apizeporteiro.controller.CondominioController;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,5 +24,5 @@ public class Porteiro {
     @ManyToOne
     private Condominio condominio;
     @OneToMany(mappedBy = "porteiro")
-    private List<Entrega> entregas;
+    private List<Entrega> entregas = new ArrayList<>();
 }

@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/porteiros")
 @RequiredArgsConstructor
 public class PorteiroController {
+
     private final PorteiroService porteiroService;
 
     @PostMapping

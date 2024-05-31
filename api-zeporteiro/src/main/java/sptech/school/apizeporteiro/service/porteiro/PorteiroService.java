@@ -1,31 +1,15 @@
 package sptech.school.apizeporteiro.service.porteiro;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import sptech.school.apizeporteiro.confiiguration.security.jwt.GerenciadorTokenJwt;
-import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.condominio.repository.CondominioRepository;
 import sptech.school.apizeporteiro.domain.entrega.repository.EntregaRepository;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.domain.porteiro.repository.PorteiroRepository;
-import sptech.school.apizeporteiro.mapper.ClienteMapper;
-import sptech.school.apizeporteiro.mapper.CondominioMapper;
 import sptech.school.apizeporteiro.mapper.PorteiroMapper;
-import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteLoginDto;
-import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
-import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
-import sptech.school.apizeporteiro.service.condominio.dto.CondominioCriacaoDto;
-import sptech.school.apizeporteiro.service.porteiro.autenticacao.dto.PorteiroLoginDto;
-import sptech.school.apizeporteiro.service.porteiro.autenticacao.dto.PorteiroTokenDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroCriacaoDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
 
@@ -36,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PorteiroService {
+
     private final PorteiroRepository porteiroRepository;
     private final CondominioRepository condominioRepository;
     private final EntregaRepository entregaRepository;
