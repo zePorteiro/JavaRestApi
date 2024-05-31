@@ -3,8 +3,10 @@ package sptech.school.apizeporteiro.service.entrega;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
@@ -39,6 +41,8 @@ public class EntregaService {
     private final EntregaRepository entregaRepository;
     private final ApartamentoRepository apartamentoRepository;
     private final CondominioRepository condominioRepository;
+    private final RestTemplate restTemplate;
+
 
     public EntregaListagemDto cadastrarEntrega(EntregaCriacaoDto novaEntregaDto) {
         Entrega entrega = EntregaMapper.toEntity(novaEntregaDto);
@@ -75,13 +79,13 @@ public class EntregaService {
         return listagemEntrega;
     }
 
-    private void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {
+    public void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime twoMinutesLater = now.plusMinutes(2);
         int hora = twoMinutesLater.getHour();
         int minuto = twoMinutesLater.getMinute();
 
-        String apiUrl = "http://localhost:8081/enviar-mensagem";
+        String apiUrl = "http://192.168.0.19:8081/enviar-mensagem";
         String requestBody = String.format("{\"numero\": \"%s\", \"hora\": %d, \"minuto\": %d}",
                 numeroTelefone, hora, minuto);
 
@@ -89,8 +93,11 @@ public class EntregaService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+        try {
+            restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+        } catch (RestClientException e) {
+            throw new RuntimeException("Falha ao enviar mensagem: " + e.getMessage(), e);
+        }
     }
 
     public List<EntregaListagemDto> listarPendentes() {
