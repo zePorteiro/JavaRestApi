@@ -54,37 +54,18 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/acuator/*"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
-            new AntPathRequestMatcher("/clientes"),
-            new AntPathRequestMatcher("/clientes/login/**"),
-            new AntPathRequestMatcher("/enderecos/**"),
-            new AntPathRequestMatcher("/entregas/**"),
-            new AntPathRequestMatcher("/condominios/**"),
+            new AntPathRequestMatcher("/clientes/**", HttpMethod.POST.name()),
+            new AntPathRequestMatcher("/clientes/login/**", HttpMethod.POST.name()),
+//            new AntPathRequestMatcher("/enderecos/**"),
+//            new AntPathRequestMatcher("/entregas/**"),
+//            new AntPathRequestMatcher("/condominios/**"),
             new AntPathRequestMatcher("/python-api/**"),
-            new AntPathRequestMatcher("/react-app/**")
+            new AntPathRequestMatcher("/react-app/**"),
+//            new AntPathRequestMatcher("/**")
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .cors(Customizer.withDefaults())
-                .csrf(CsrfConfigurer<HttpSecurity>::disable)
-                .authorizeRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .exceptionHandling(handling -> handling
-                        .authenticationEntryPoint(autenticacaoEntryPoint))
-                .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtAuthenticacaoFilterBean(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception{
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(new
@@ -92,46 +73,58 @@ public class SecurityConfiguracao {
         return authenticationManagerBuilder.build();
     }
 
+
+
     @Bean
-    public AutenticacaoEntryPoint jwtAuthenticacaoEntryPointBean(){
-        return new AutenticacaoEntryPoint();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors(Customizer.withDefaults())
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .csrf(CsrfConfigurer<HttpSecurity>::disable)
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS).permitAll().anyRequest().authenticated()
+                )
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(autenticacaoEntryPoint))
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+
+        return http.build();
+
     }
 
     @Bean
-    public AutenticacaoFilter jwtAuthenticacaoFilterBean(){
-        return new AutenticacaoFilter(autenticacaoService, jwtAuthenticacaoUtilBean());
-    }
-
-    @Bean
-    public GerenciadorTokenJwt jwtAuthenticacaoUtilBean(){
+    public GerenciadorTokenJwt jwtAuthenticacaoUtilBean() {
         return new GerenciadorTokenJwt();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public AutenticacaoFilter jwtAuthenticationFilterBean() {
+        return new AutenticacaoFilter(autenticacaoService, jwtAuthenticacaoUtilBean());
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuracao = new CorsConfiguration();
         configuracao.applyPermitDefaultValues();
-        configuracao.setAllowedMethods(
-                Arrays.asList(
-                        HttpMethod.GET.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.PATCH.name(),
-                        HttpMethod.DELETE.name(),
-                        HttpMethod.OPTIONS.name(),
-                        HttpMethod.HEAD.name(),
-                        HttpMethod.TRACE.name()));
+        configuracao.setAllowedMethods(Arrays.asList(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name(),
+                HttpMethod.HEAD.name(),
+                HttpMethod.TRACE.name()));
 
         configuracao.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
-
         UrlBasedCorsConfigurationSource origem = new UrlBasedCorsConfigurationSource();
         origem.registerCorsConfiguration("/**", configuracao);
-
         return origem;
     }
 }

@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/condominios")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class CondominioController {
     private final CondominioService condominioService;
 

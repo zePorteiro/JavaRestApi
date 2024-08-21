@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/entregas")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class EntregaController {
 
     private final EntregaService entregaService;

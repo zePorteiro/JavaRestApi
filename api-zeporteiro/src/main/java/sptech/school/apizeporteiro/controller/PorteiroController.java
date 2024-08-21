@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/porteiros")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class PorteiroController {
 
     private final PorteiroService porteiroService;

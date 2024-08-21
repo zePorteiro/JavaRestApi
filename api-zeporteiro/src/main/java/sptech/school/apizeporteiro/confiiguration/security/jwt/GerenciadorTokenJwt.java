@@ -55,10 +55,10 @@ public class GerenciadorTokenJwt {
         return expirationDate.before(new Date(System.currentTimeMillis()));
     }
 
+
     private Claims getAllClaimsForToken(String token){
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(parseSecret())
-                .build()
                 .parseClaimsJws(token).getBody();
     }
 

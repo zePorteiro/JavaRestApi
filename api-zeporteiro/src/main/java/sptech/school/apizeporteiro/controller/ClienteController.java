@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clientes")
+@SecurityRequirement(name = "bearerAuth")
 public class ClienteController {
     private final ClienteService clienteService;
     private final ClienteRepository clienteRepository;
