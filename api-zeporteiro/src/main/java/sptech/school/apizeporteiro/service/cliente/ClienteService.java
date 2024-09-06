@@ -34,13 +34,24 @@ public class ClienteService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
-    public void criar(ClienteCriacaoDto clienteCriacaoDto){
+    public ClienteTokenDto criar(ClienteCriacaoDto clienteCriacaoDto){
         final Cliente novoCliente = ClienteMapper.of(clienteCriacaoDto);
         String senhaCriptografada = passwordEncoder.encode(novoCliente.getSenha());
         novoCliente.setSenha(senhaCriptografada);
 
         this.clienteRepository.save(novoCliente);
+
+        // Autenticar o novo cliente para gerar o token
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+                clienteCriacaoDto.getEmail(), clienteCriacaoDto.getSenha());
+
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final String token = gerenciadorTokenJwt.generateToken(authentication);
+
+        return ClienteMapper.of(novoCliente, token);
     }
 
     public ClienteTokenDto autenticar(ClienteLoginDto clienteLoginDto){
@@ -53,7 +64,7 @@ public class ClienteService {
         Cliente usuarioAutenticado =
                 clienteRepository.findByEmail(clienteLoginDto.getEmail())
                         .orElseThrow(
-                                () -> new ResponseStatusException(404, "Email od usuário não cadastrado.", null)
+                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado.", null)
                         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

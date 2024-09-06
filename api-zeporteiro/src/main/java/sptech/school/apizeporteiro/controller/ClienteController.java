@@ -29,9 +29,9 @@ public class ClienteController {
     private final ClienteRepository clienteRepository;
 
     @PostMapping
-    public ResponseEntity<Void> criar(@RequestBody @Valid ClienteCriacaoDto clienteCriacaoDto){
-        this.clienteService.criar(clienteCriacaoDto);
-        return ResponseEntity.status(201).build();
+    public ResponseEntity<ClienteTokenDto> criar(@RequestBody @Valid ClienteCriacaoDto clienteCriacaoDto){
+        ClienteTokenDto clienteTokenDto = this.clienteService.criar(clienteCriacaoDto);
+        return ResponseEntity.status(201).body(clienteTokenDto);
     }
 
     @PostMapping("/login")
