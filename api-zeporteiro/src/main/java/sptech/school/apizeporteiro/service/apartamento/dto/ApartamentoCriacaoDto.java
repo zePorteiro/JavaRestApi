@@ -14,4 +14,12 @@ public class ApartamentoCriacaoDto {
     private Boolean vazio;
     @NotNull
     private Integer condominioId;
+
+    public Boolean getVazio(){
+        return vazio;
+    }
+
+    public void setVazio(Boolean vazio){
+        this.vazio = vazio;
+    }
 }
