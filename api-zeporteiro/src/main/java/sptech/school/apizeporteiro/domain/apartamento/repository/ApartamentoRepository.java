@@ -17,6 +17,10 @@ public interface ApartamentoRepository extends JpaRepository<Apartamento, Intege
 //    Long countApartamentoCondominio(Integer fkCliente);
 
     // SELECT * FROM apartamento WHERE num_ap like 'XPTO'
+
+    List<Apartamento> findByCondominioId(Integer condominioId);
+
+
     List<Apartamento> findByNumApIgnoreCase(String numAp);
 
     // SELECT * FROM apartamento WHERE vazio = 'true'

@@ -36,4 +36,6 @@ public class ApartamentoListagemDto {
         private LocalDate dataRecebimentoMorador;
         private Boolean recebido;
     }
+
+
 }

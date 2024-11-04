@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
+import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
 

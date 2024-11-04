@@ -5,6 +5,7 @@ import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.morador.Morador;
+import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
@@ -52,6 +53,18 @@ public class MoradorMapper {
         morador.setNumeroWhats3(dto.getNumeroWhats3());
         morador.setApartamento(apartamento);
 
+        return morador;
+    }
+    public static Morador toEntity(CadastroMoradorDto dto, Condominio condominio) {
+        if (dto == null) return null;
+
+        Morador morador = new Morador();
+        morador.setNome(dto.getNome());
+        morador.setEmail(dto.getEmail());
+        morador.setSenha(dto.getSenha());
+        morador.setCpf(dto.getCpf());
+        morador.setCep(dto.getCep());
+        morador.setCondominio(condominio);
         return morador;
     }
 

@@ -6,4 +6,6 @@ import sptech.school.apizeporteiro.domain.condominio.Condominio;
 
 @Repository
 public interface CondominioRepository extends JpaRepository<Condominio, Integer> {
+
+    Condominio findByCep(String cep);
 }

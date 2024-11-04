@@ -1,6 +1,7 @@
 package sptech.school.apizeporteiro.service.morador;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -8,12 +9,14 @@ import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.apartamento.repository.ApartamentoRepository;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
+import sptech.school.apizeporteiro.domain.condominio.repository.CondominioRepository;
 import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.domain.morador.repository.MoradorRepository;
 import sptech.school.apizeporteiro.mapper.ApartamentoMapper;
 import sptech.school.apizeporteiro.mapper.CondominioMapper;
 import sptech.school.apizeporteiro.mapper.MoradorMapper;
 import sptech.school.apizeporteiro.service.condominio.dto.CondominioCriacaoDto;
+import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
@@ -27,6 +30,9 @@ public class MoradorService {
     private final MoradorRepository moradorRepository;
     private final ApartamentoRepository apartamentoRepository;
 
+    @Autowired
+    private CondominioRepository condominioRepository;
+
     public void cadastrarMoradores(List<MoradorCriacaoDto> moradorCriacaoDtos, Integer fkApartamento) {
         Apartamento apartamento = apartamentoRepository.findById(fkApartamento)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
@@ -36,6 +42,16 @@ public class MoradorService {
         moradorRepository.saveAll(moradores);
     }
 
+
+    public Morador cadastrarMorador(CadastroMoradorDto dto) {
+        Condominio condominio = condominioRepository.findByCep(dto.getCep());
+        if (condominio == null) {
+            throw new IllegalArgumentException("Condomínio não encontrado para o CEP fornecido.");
+        }
+
+        Morador morador = MoradorMapper.toEntity(dto, condominio);
+        return moradorRepository.save(morador);
+    }
     public void cadastrarMorador(MoradorCriacaoDto moradorCriacaoDto, Integer fkApartamento) {
         Apartamento apartamento = apartamentoRepository.findById(fkApartamento)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));

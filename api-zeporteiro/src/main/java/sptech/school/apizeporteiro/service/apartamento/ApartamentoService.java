@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import sptech.school.apizeporteiro.domain.apartamento.ApartamentoConverter;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,12 @@ public class ApartamentoService {
     private final ClienteRepository clienteRepository;
     private final CondominioRepository condominioRepository;
 
+    public List<ApartamentoListagemDto> listarApartamentosPorCondominio(Integer condominioId) {
+        List<Apartamento> apartamentos = apartamentoRepository.findByCondominioId(condominioId);
+        return apartamentos.stream()
+                .map(ApartamentoConverter::toDto) // Usa o método de conversão
+                .collect(Collectors.toList());
+    }
     public List<ApartamentoListagemDto> salvarApartamentos(List<ApartamentoCriacaoDto> apartamentosDTO) {
         List<Apartamento> apartamentos = apartamentosDTO.stream()
                 .map(ApartamentoMapper::toEntity)

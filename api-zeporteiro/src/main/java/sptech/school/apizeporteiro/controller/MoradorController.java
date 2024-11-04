@@ -1,11 +1,14 @@
 package sptech.school.apizeporteiro.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.service.morador.MoradorService;
+import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
@@ -24,6 +27,11 @@ public class MoradorController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/cadastrarMorador")
+    public ResponseEntity<Morador> cadastrarMorador(@RequestBody @Valid CadastroMoradorDto dto) {
+        Morador morador = moradorService.cadastrarMorador(dto);
+        return ResponseEntity.ok(morador);
+    }
     @PostMapping("/lista/apartamento/{fkApartamento}")
     public ResponseEntity<Void> cadastrarMoradores(@RequestBody List<MoradorCriacaoDto> moradorCriacaoDtos, @PathVariable Integer fkApartamento) {
         moradorService.cadastrarMoradores(moradorCriacaoDtos, fkApartamento);

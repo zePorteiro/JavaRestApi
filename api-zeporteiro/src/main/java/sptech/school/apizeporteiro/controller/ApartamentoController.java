@@ -57,4 +57,10 @@ public class ApartamentoController {
         List<ApartamentoListagemDto> apartamentos = apartamentoService.listarTodosApartamentos();
         return ResponseEntity.ok(apartamentos);
     }
+
+    @GetMapping("/condominio/{condominioId}")
+    public ResponseEntity<List<ApartamentoListagemDto>> listarApartamentosPorCondominio(@PathVariable Integer condominioId) {
+        List<ApartamentoListagemDto> apartamentos = apartamentoService.listarApartamentosPorCondominio(condominioId);
+        return ResponseEntity.ok(apartamentos);
+    }
 }
