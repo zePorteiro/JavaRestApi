@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.service.entrega.EntregaService;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
@@ -26,6 +27,12 @@ public class EntregaController {
     public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@RequestBody EntregaCriacaoDto novaEntregaDto) {
         EntregaListagemDto entregaListagemDto = entregaService.cadastrarEntrega(novaEntregaDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(entregaListagemDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Entrega>> listarEntregas() {
+        List<Entrega> entregas = entregaService.listarEntregas();
+        return ResponseEntity.ok(entregas);
     }
 
     @GetMapping("/pendentes")

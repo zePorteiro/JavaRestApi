@@ -79,6 +79,10 @@ public class EntregaService {
         return listagemEntrega;
     }
 
+    public List<Entrega> listarEntregas() {
+        return entregaRepository.findAll();
+    }
+
     public void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime twoMinutesLater = now.plusMinutes(2);
