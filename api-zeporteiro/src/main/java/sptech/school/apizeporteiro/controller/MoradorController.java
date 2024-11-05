@@ -5,13 +5,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.service.morador.MoradorService;
+import sptech.school.apizeporteiro.service.morador.autenticacao.MoradorTokenDto;
 import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
+import sptech.school.apizeporteiro.service.morador.dto.LoginMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @RestController
@@ -36,6 +40,16 @@ public class MoradorController {
     public ResponseEntity<Void> cadastrarMoradores(@RequestBody List<MoradorCriacaoDto> moradorCriacaoDtos, @PathVariable Integer fkApartamento) {
         moradorService.cadastrarMoradores(moradorCriacaoDtos, fkApartamento);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MoradorTokenDto> login(@RequestBody @Valid LoginMoradorDto loginDto) {
+        try {
+            MoradorTokenDto tokenDto = moradorService.authenticate(loginDto);
+            return ResponseEntity.ok(tokenDto);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     @GetMapping("/apartamento/{apartamentoId}")
