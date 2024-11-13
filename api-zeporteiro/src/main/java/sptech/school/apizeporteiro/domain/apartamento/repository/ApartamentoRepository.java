@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApartamentoRepository extends JpaRepository<Apartamento, Integer> {
@@ -19,6 +20,8 @@ public interface ApartamentoRepository extends JpaRepository<Apartamento, Intege
     // SELECT * FROM apartamento WHERE num_ap like 'XPTO'
 
     List<Apartamento> findByCondominioId(Integer condominioId);
+
+    Optional<Apartamento> findByNumAp(String numAp);
 
 
     List<Apartamento> findByNumApIgnoreCase(String numAp);

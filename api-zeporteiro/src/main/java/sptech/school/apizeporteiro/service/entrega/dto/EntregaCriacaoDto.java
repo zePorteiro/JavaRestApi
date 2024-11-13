@@ -9,13 +9,14 @@ import java.time.LocalDate;
 
 @Data
 public class EntregaCriacaoDto {
-    @NotBlank
-    @Size(max = 300)
-    @Size(min = 2)
+    @NotBlank(message = "O tipo de entrega é obrigatório")
+    @Size(min = 2, max = 300, message = "O tipo de entrega deve ter entre 2 e 300 caracteres")
     private String tipoEntrega;
-    @PastOrPresent(message = "A data de recebimento do morador deve ser no passado ou no presente")
+    @PastOrPresent(message = "A data de recebimento deve ser no passado ou presente")
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
     private Boolean recebido;
-    private Integer fkApartamento;
+    @NotBlank(message = "O número do apartamento é obrigatório")
+    private String numAp;
+    private String porteiroNome;
 }

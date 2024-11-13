@@ -43,7 +43,6 @@ public class CondominioMapper {
         clienteDto.setId(entity.getId());
         clienteDto.setEmail(entity.getEmail());
         clienteDto.setNome(entity.getNome());
-        // Removido o campo senha
         clienteDto.setCnpj(entity.getCnpj());
         clienteDto.setRepresentante(entity.getRepresentante());
 

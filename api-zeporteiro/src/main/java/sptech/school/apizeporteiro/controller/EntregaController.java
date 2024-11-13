@@ -25,8 +25,8 @@ public class EntregaController {
 
     @PostMapping
     public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@RequestBody EntregaCriacaoDto novaEntregaDto) {
-        EntregaListagemDto entregaListagemDto = entregaService.cadastrarEntrega(novaEntregaDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(entregaListagemDto);
+        EntregaListagemDto entrega = entregaService.cadastrarEntrega(novaEntregaDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(entrega);
     }
 
     @GetMapping

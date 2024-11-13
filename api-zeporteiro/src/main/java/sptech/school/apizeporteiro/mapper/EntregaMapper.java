@@ -19,25 +19,30 @@ public class EntregaMapper {
         entrega.setDataRecebimentoMorador(dto.getDataRecebimentoMorador());
         entrega.setRecebido(dto.getRecebido());
 
-        // Mapeia o ID do apartamento
+        // Mapeia o apartamento usando o numAp
         Apartamento apartamento = new Apartamento();
-        apartamento.setId(dto.getFkApartamento());
+        apartamento.setNumAp(dto.getNumAp());
         entrega.setApartamento(apartamento);
 
         return entrega;
     }
 
     public static EntregaListagemDto toDto(Entrega entity) {
-        if (entity == null) {
-            return null;
-        }
+        if (entity == null) return null;
 
         EntregaListagemDto entregaListagemDto = new EntregaListagemDto();
 
         entregaListagemDto.setDataRecebimentoPorteiro(entity.getDataRecebimentoPorteiro());
         entregaListagemDto.setDataRecebimentoMorador(entity.getDataRecebimentoMorador());
         entregaListagemDto.setRecebido(entity.getRecebido());
-        entregaListagemDto.setApartamento(toApartamentoDto(entity.getApartamento()));
+
+        // Mapeia o apartamento
+        if (entity.getApartamento() != null) {
+            EntregaListagemDto.ApartamentoDto apartamentoDto = new EntregaListagemDto.ApartamentoDto();
+            apartamentoDto.setNumAp(entity.getApartamento().getNumAp());
+            apartamentoDto.setBloco(entity.getApartamento().getBloco());
+            entregaListagemDto.setApartamento(apartamentoDto);
+        }
         entregaListagemDto.setPorteiro(toPorteiroDto(entity.getPorteiro()));
 
         return entregaListagemDto;
@@ -48,7 +53,8 @@ public class EntregaMapper {
 
         EntregaListagemDto.ApartamentoDto dto = new EntregaListagemDto.ApartamentoDto();
 
-        dto.setId(entity.getId());
+        dto.setNumAp(entity.getNumAp());
+        dto.setBloco(entity.getBloco());
 
         return dto;
     }

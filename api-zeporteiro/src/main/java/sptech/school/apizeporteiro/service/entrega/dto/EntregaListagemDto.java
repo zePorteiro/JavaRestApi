@@ -18,7 +18,8 @@ public class EntregaListagemDto {
 
     @Data
     public static class ApartamentoDto {
-        private Integer id;
+        private String numAp;
+        private String bloco;
     }
 
     @Data

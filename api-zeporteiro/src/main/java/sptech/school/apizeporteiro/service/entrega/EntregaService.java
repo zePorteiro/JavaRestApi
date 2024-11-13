@@ -1,6 +1,7 @@
 package sptech.school.apizeporteiro.service.entrega;
 
 import jakarta.annotation.Resource;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import sptech.school.apizeporteiro.domain.condominio.repository.CondominioReposi
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.entrega.repository.EntregaRepository;
 import sptech.school.apizeporteiro.domain.morador.Morador;
+import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
+import sptech.school.apizeporteiro.domain.porteiro.repository.PorteiroRepository;
 import sptech.school.apizeporteiro.mapper.EntregaMapper;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
@@ -41,42 +44,29 @@ public class EntregaService {
     private final EntregaRepository entregaRepository;
     private final ApartamentoRepository apartamentoRepository;
     private final CondominioRepository condominioRepository;
+    private final PorteiroRepository porteiroRepository;
     private final RestTemplate restTemplate;
 
 
     public EntregaListagemDto cadastrarEntrega(EntregaCriacaoDto novaEntregaDto) {
-        Entrega entrega = EntregaMapper.toEntity(novaEntregaDto);
+        Apartamento apartamento = apartamentoRepository.findByNumAp(novaEntregaDto.getNumAp())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Apartamento não encontrado com o número: " + novaEntregaDto.getNumAp()));
+
+        Porteiro porteiro = porteiroRepository.findByNome(novaEntregaDto.getPorteiroNome())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Porteiro não encontrado com o nome: " + novaEntregaDto.getPorteiroNome()));
+
+        Entrega entrega = new Entrega();
+        entrega.setTipoEntrega(novaEntregaDto.getTipoEntrega());
+        entrega.setDataRecebimentoPorteiro(novaEntregaDto.getDataRecebimentoPorteiro());
+        entrega.setDataRecebimentoMorador(novaEntregaDto.getDataRecebimentoMorador());
+        entrega.setRecebido(novaEntregaDto.getRecebido());
+        entrega.setApartamento(apartamento);
+        entrega.setPorteiro(porteiro);
 
         Entrega entregaSalva = entregaRepository.save(entrega);
-        EntregaListagemDto listagemEntrega = EntregaMapper.toDto(entregaSalva);
-
-        Integer fkApartamento = novaEntregaDto.getFkApartamento();
-        Optional<Apartamento> optionalApartamento = apartamentoRepository.findById(fkApartamento);
-        if (optionalApartamento.isPresent()) {
-            Apartamento apartamento = optionalApartamento.get();
-            List<Morador> moradores = apartamento.getMoradores();
-
-            if (!moradores.isEmpty()) {
-                Morador morador = moradores.get(0);
-
-                // Criando a fila de números de WhatsApp
-                Queue<String> numerosWhatsApp = new LinkedList<>();
-                if (morador.getNumeroWhats1() != null) numerosWhatsApp.add(morador.getNumeroWhats1());
-                if (morador.getNumeroWhats2() != null) numerosWhatsApp.add(morador.getNumeroWhats2());
-                if (morador.getNumeroWhats3() != null) numerosWhatsApp.add(morador.getNumeroWhats3());
-
-                LocalDate dataEntregaLocalDate = entregaSalva.getDataRecebimentoPorteiro();
-                Date dataEntregaDate = Date.from(dataEntregaLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-                // Processando a fila de números de WhatsApp
-                while (!numerosWhatsApp.isEmpty()) {
-                    String numeroWhatsApp = numerosWhatsApp.poll();
-                    enviarMensagemWhatsApp(numeroWhatsApp, dataEntregaDate);
-                }
-            }
-        }
-
-        return listagemEntrega;
+        return EntregaMapper.toDto(entregaSalva);
     }
 
     public List<Entrega> listarEntregas() {

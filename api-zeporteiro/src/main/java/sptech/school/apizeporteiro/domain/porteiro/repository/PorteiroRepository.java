@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface PorteiroRepository extends JpaRepository<Porteiro, Integer> {
     List<Porteiro> findByCondominioId(Integer condominioId);
+
+    Optional<Porteiro> findByNome(String nome);
 }
