@@ -2,6 +2,7 @@ package sptech.school.apizeporteiro.service.entrega.dto;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
+import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 
 import java.time.LocalDate;
 
@@ -13,13 +14,12 @@ public class EntregaListagemDto {
     private Boolean recebido;
 
     private ApartamentoDto apartamento;
-
     private PorteiroDto porteiro;
 
     @Data
     public static class ApartamentoDto {
+        private Integer id;
         private String numAp;
-        private String bloco;
     }
 
     @Data
@@ -29,3 +29,4 @@ public class EntregaListagemDto {
         private String rg;
     }
 }
+

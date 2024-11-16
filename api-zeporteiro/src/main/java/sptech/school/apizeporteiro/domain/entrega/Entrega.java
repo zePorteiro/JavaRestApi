@@ -24,7 +24,9 @@ public class Entrega {
     private LocalDate dataRecebimentoMorador;
     private Boolean recebido;
     @ManyToOne
+    @JoinColumn(name = "APARTAMENTO_ID", nullable = false)
     private Apartamento apartamento;
     @ManyToOne
+    @JoinColumn(name = "FK_PORTEIRO", nullable = false)
     private Porteiro porteiro;
 }

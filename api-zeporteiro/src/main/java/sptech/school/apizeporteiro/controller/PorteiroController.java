@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.domain.porteiro.repository.PorteiroRepository;
+import sptech.school.apizeporteiro.mapper.PorteiroMapper;
+import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 import sptech.school.apizeporteiro.service.porteiro.PorteiroService;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroCriacaoDto;
 import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;

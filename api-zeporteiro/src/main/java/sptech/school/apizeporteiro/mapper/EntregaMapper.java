@@ -6,6 +6,10 @@ import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class EntregaMapper {
     public static Entrega toEntity(EntregaCriacaoDto dto) {
         if (dto == null) {
@@ -19,42 +23,53 @@ public class EntregaMapper {
         entrega.setDataRecebimentoMorador(dto.getDataRecebimentoMorador());
         entrega.setRecebido(dto.getRecebido());
 
-        // Mapeia o apartamento usando o numAp
-        Apartamento apartamento = new Apartamento();
-        apartamento.setNumAp(dto.getNumAp());
-        entrega.setApartamento(apartamento);
-
         return entrega;
     }
 
-    public static EntregaListagemDto toDto(Entrega entity) {
-        if (entity == null) return null;
-
-        EntregaListagemDto entregaListagemDto = new EntregaListagemDto();
-
-        entregaListagemDto.setDataRecebimentoPorteiro(entity.getDataRecebimentoPorteiro());
-        entregaListagemDto.setDataRecebimentoMorador(entity.getDataRecebimentoMorador());
-        entregaListagemDto.setRecebido(entity.getRecebido());
-
-        // Mapeia o apartamento
-        if (entity.getApartamento() != null) {
-            EntregaListagemDto.ApartamentoDto apartamentoDto = new EntregaListagemDto.ApartamentoDto();
-            apartamentoDto.setNumAp(entity.getApartamento().getNumAp());
-            apartamentoDto.setBloco(entity.getApartamento().getBloco());
-            entregaListagemDto.setApartamento(apartamentoDto);
+    public static EntregaListagemDto toDto(Entrega entrega) {
+        if (entrega == null) {
+            return null;
         }
-        entregaListagemDto.setPorteiro(toPorteiroDto(entity.getPorteiro()));
 
-        return entregaListagemDto;
+        EntregaListagemDto dto = new EntregaListagemDto();
+        dto.setTipoEntrega(entrega.getTipoEntrega());
+        dto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
+        dto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
+        dto.setRecebido(entrega.getRecebido());
+
+        if (entrega.getApartamento() != null) {
+            EntregaListagemDto.ApartamentoDto apartamentoDto = new EntregaListagemDto.ApartamentoDto();
+            apartamentoDto.setId(entrega.getApartamento().getId());
+            apartamentoDto.setNumAp(entrega.getApartamento().getNumAp());
+            dto.setApartamento(apartamentoDto);
+        }
+
+        if (entrega.getPorteiro() != null) {
+            EntregaListagemDto.PorteiroDto porteiroDto = new EntregaListagemDto.PorteiroDto();
+            porteiroDto.setId(entrega.getPorteiro().getId());
+            porteiroDto.setNome(entrega.getPorteiro().getNome());
+            porteiroDto.setRg(entrega.getPorteiro().getRg());
+            dto.setPorteiro(porteiroDto);
+        }
+
+        return dto;
+    }
+
+    public static List<EntregaListagemDto> toListDto(List<Entrega> entregas) {
+        if (entregas == null) {
+            return Collections.emptyList();
+        }
+        return entregas.stream()
+                .map(EntregaMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public static EntregaListagemDto.ApartamentoDto toApartamentoDto(Apartamento entity) {
         if (entity == null) return null;
 
         EntregaListagemDto.ApartamentoDto dto = new EntregaListagemDto.ApartamentoDto();
-
+        dto.setId(entity.getId());
         dto.setNumAp(entity.getNumAp());
-        dto.setBloco(entity.getBloco());
 
         return dto;
     }

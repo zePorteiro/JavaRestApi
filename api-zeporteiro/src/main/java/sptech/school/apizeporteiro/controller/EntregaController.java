@@ -2,6 +2,7 @@ package sptech.school.apizeporteiro.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,15 @@ public class EntregaController {
     private final EntregaService entregaService;
 
     @PostMapping
-    public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@RequestBody EntregaCriacaoDto novaEntregaDto) {
+    public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@Valid @RequestBody EntregaCriacaoDto novaEntregaDto) {
         EntregaListagemDto entrega = entregaService.cadastrarEntrega(novaEntregaDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(entrega);
+    }
+
+    @GetMapping("/apartamento/{numeroApartamento}")
+    public ResponseEntity<List<EntregaListagemDto>> buscarEntregasPorApartamento(@PathVariable String numeroApartamento) {
+        List<EntregaListagemDto> entregas = entregaService.buscarEntregasPorApartamento(numeroApartamento);
+        return ResponseEntity.ok(entregas);
     }
 
     @GetMapping
