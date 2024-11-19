@@ -1,10 +1,8 @@
 package sptech.school.apizeporteiro.service.entrega;
 
-import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -16,26 +14,20 @@ import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.condominio.repository.CondominioRepository;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.entrega.repository.EntregaRepository;
-import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.domain.porteiro.repository.PorteiroRepository;
 import sptech.school.apizeporteiro.mapper.EntregaMapper;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaListagemDto;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.LinkedList;
-import java.util.Queue;
 
 @Service
 @RequiredArgsConstructor
@@ -49,28 +41,37 @@ public class EntregaService {
 
 
     public EntregaListagemDto cadastrarEntrega(EntregaCriacaoDto novaEntregaDto) {
-        Apartamento apartamento = apartamentoRepository.findByNumAp(novaEntregaDto.getNumAp())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Apartamento não encontrado com o número: " + novaEntregaDto.getNumAp()));
+        Optional<Apartamento> optionalApartamento = apartamentoRepository.findByNumAp(novaEntregaDto.getNumAp());
 
-        Porteiro porteiro = porteiroRepository.findByNome(novaEntregaDto.getPorteiroNome())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Porteiro não encontrado com o nome: " + novaEntregaDto.getPorteiroNome()));
+        if (optionalApartamento.isEmpty()) {
+            throw new EntityNotFoundException(
+                    "Apartamento não encontrado com o número: " + novaEntregaDto.getNumAp());
+        }
 
-        Entrega entrega = new Entrega();
-        entrega.setTipoEntrega(novaEntregaDto.getTipoEntrega());
-        entrega.setDataRecebimentoPorteiro(novaEntregaDto.getDataRecebimentoPorteiro());
-        entrega.setDataRecebimentoMorador(novaEntregaDto.getDataRecebimentoMorador());
-        entrega.setRecebido(novaEntregaDto.getRecebido());
-        entrega.setApartamento(apartamento);
-        entrega.setPorteiro(porteiro);
+        Optional<Porteiro> optionalPorteiro = porteiroRepository.findById(novaEntregaDto.getIdPorteiro());
+
+        if (optionalPorteiro.isEmpty()) {
+            throw new EntityNotFoundException(
+                    "Porteiro não encontrado com o ID: " + novaEntregaDto.getIdPorteiro());
+        }
+
+        Entrega entrega = EntregaMapper.toEntity(novaEntregaDto);
+
+        entrega.setApartamento(optionalApartamento.get());
+        entrega.setPorteiro(optionalPorteiro.get());
 
         Entrega entregaSalva = entregaRepository.save(entrega);
+
         return EntregaMapper.toDto(entregaSalva);
     }
 
     public List<Entrega> listarEntregas() {
         return entregaRepository.findAll();
+    }
+
+    public List<EntregaListagemDto> buscarEntregasPorApartamento(String numeroApartamento) {
+        List<Entrega> entregas = entregaRepository.findByApartamentoNumAp(numeroApartamento);
+        return EntregaMapper.toListDto(entregas);
     }
 
     public void enviarMensagemWhatsApp(String numeroTelefone, Date dataEntrega) {

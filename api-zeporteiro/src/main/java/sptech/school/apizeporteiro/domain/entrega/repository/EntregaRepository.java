@@ -21,5 +21,8 @@ public interface EntregaRepository extends JpaRepository<Entrega, Integer> {
 
     List<Entrega> findByRecebidoFalse();
     long countByDataRecebimentoMoradorAfter(LocalDate date);
+
     Optional<Entrega> findTopByOrderByDataRecebimentoMoradorDesc();
+
+    List<Entrega> findByApartamentoNumAp(String numeroApartamento);
 }
