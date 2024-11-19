@@ -6,6 +6,16 @@ public class ClienteTokenDto {
     private String email;
     private String token;
 
+    private Integer condominioid;
+
+    public Integer getCondominioid() {
+        return condominioid;
+    }
+
+    public void setCondominioid(Integer condominioid) {
+        this.condominioid = condominioid;
+    }
+
     public Integer getUserId() {
         return userId;
     }

@@ -5,9 +5,8 @@ import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteListagemDto;
-import sptech.school.apizeporteiro.service.condominio.dto.CondominioListagemDto;
+import sptech.school.apizeporteiro.service.cliente.dto.ClienteAutenticacaoDto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,7 @@ public class ClienteMapper {
         dto.setNome(entity.getNome());
         dto.setCnpj(entity.getCnpj());
         dto.setRepresentante(entity.getRepresentante());
+
 
         // Mapeia os condomínios associados
         dto.setCondominios(entity.getCondominios().stream()
@@ -87,4 +87,23 @@ public class ClienteMapper {
 
         return clienteTokenDto;
     }
+
+    public static ClienteAutenticacaoDto autenticacaoDto(Cliente cliente, String token) {
+        ClienteAutenticacaoDto clienteTokenDto = new ClienteAutenticacaoDto();
+
+        clienteTokenDto.setUserId(cliente.getId());
+        clienteTokenDto.setEmail(cliente.getEmail());
+        clienteTokenDto.setNome(cliente.getNome());
+        clienteTokenDto.setToken(token);
+
+        if (cliente.getCondominios() != null && !cliente.getCondominios().isEmpty()) {
+            clienteTokenDto.setCondominioid(cliente.getCondominios().get(0).getId());
+        } else {
+            clienteTokenDto.setCondominioid(null);
+        }
+
+        return clienteTokenDto;
+    }
+
+
 }

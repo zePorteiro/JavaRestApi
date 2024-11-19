@@ -11,6 +11,7 @@ import sptech.school.apizeporteiro.mapper.ClienteMapper;
 import sptech.school.apizeporteiro.service.cliente.ClienteService;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteLoginDto;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
+import sptech.school.apizeporteiro.service.cliente.dto.ClienteAutenticacaoDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteListagemDto;
 
@@ -35,9 +36,9 @@ public class ClienteController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ClienteTokenDto> login(@RequestBody ClienteLoginDto clienteLoginDto){
-        ClienteTokenDto clienteTokenDto = this.clienteService.autenticar(clienteLoginDto);
-        return ResponseEntity.status(200).body(clienteTokenDto);
+    public ResponseEntity<ClienteAutenticacaoDto> login(@RequestBody ClienteLoginDto clienteLoginDto){
+        ClienteAutenticacaoDto clienteTokenDto = clienteService.autenticar(clienteLoginDto);
+        return ResponseEntity.ok(clienteTokenDto);
     }
 
     @GetMapping("/{id}")

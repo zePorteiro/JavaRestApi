@@ -16,6 +16,7 @@ import sptech.school.apizeporteiro.domain.cliente.repository.ClienteRepository;
 import sptech.school.apizeporteiro.mapper.ClienteMapper;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteLoginDto;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.dto.ClienteTokenDto;
+import sptech.school.apizeporteiro.service.cliente.dto.ClienteAutenticacaoDto;
 import sptech.school.apizeporteiro.service.cliente.dto.ClienteCriacaoDto;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class ClienteService {
         return ClienteMapper.of(novoCliente, token);
     }
 
-    public ClienteTokenDto autenticar(ClienteLoginDto clienteLoginDto){
+    public ClienteAutenticacaoDto autenticar(ClienteLoginDto clienteLoginDto) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 clienteLoginDto.getEmail(), clienteLoginDto.getSenha());
@@ -71,7 +72,7 @@ public class ClienteService {
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
-        return ClienteMapper.of(usuarioAutenticado, token);
+        return ClienteMapper.autenticacaoDto(usuarioAutenticado, token);
     }
 
     public void excluir(int id) {
