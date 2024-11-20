@@ -1,6 +1,8 @@
 package sptech.school.apizeporteiro.service.porteiro.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
 
@@ -17,10 +19,13 @@ public class PorteiroListagemDto {
     private CondominioDto condominio;
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class CondominioDto {
         private Integer id;
         private String nome;
     }
+
     @Data
     public static class EntregaDto {
         private Integer id;

@@ -39,6 +39,33 @@ public class EntregaService {
     private final PorteiroRepository porteiroRepository;
     private final RestTemplate restTemplate;
 
+    public void excluirEntrega(Integer id) {
+        if (!entregaRepository.existsById(id)) {
+            throw new EntityNotFoundException("Entrega não encontrada com o ID: " + id);
+        }
+        entregaRepository.deleteById(id);
+    }
+
+    public EntregaListagemDto atualizarEntrega(Integer id, EntregaCriacaoDto entregaDto) {
+        Optional<Entrega> optionalEntrega = entregaRepository.findById(id);
+
+        if (optionalEntrega.isEmpty()) {
+            throw new EntityNotFoundException("Entrega não encontrada com o ID: " + id);
+        }
+
+        Entrega entrega = optionalEntrega.get();
+        entrega.setTipoEntrega(entregaDto.getTipoEntrega());
+        entrega.setDataRecebimentoPorteiro(entregaDto.getDataRecebimentoPorteiro());
+        entrega.setDataRecebimentoMorador(entregaDto.getDataRecebimentoMorador());
+        entrega.setRecebido(entregaDto.getRecebido());
+
+        Entrega entregaAtualizada = entregaRepository.save(entrega);
+
+        EntregaListagemDto entregaListagemDto = EntregaMapper.toDto(entregaAtualizada);
+        entregaListagemDto.setId(entregaAtualizada.getId()); // Adiciona o ID ao DTO
+
+        return entregaListagemDto;
+    }
 
     public EntregaListagemDto cadastrarEntrega(EntregaCriacaoDto novaEntregaDto) {
         Optional<Apartamento> optionalApartamento = apartamentoRepository.findByNumAp(novaEntregaDto.getNumAp());

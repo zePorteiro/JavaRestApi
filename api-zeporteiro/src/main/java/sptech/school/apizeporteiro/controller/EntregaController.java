@@ -24,6 +24,12 @@ public class EntregaController {
 
     private final EntregaService entregaService;
 
+    @PutMapping("/{Id}")
+    public ResponseEntity<EntregaListagemDto> atualizarEntrega(@PathVariable Integer Id, @Valid @RequestBody EntregaCriacaoDto entregaDto) {
+        EntregaListagemDto entrega = entregaService.atualizarEntrega(Id, entregaDto);
+        return ResponseEntity.ok(entrega);
+    }
+
     @PostMapping
     public ResponseEntity<EntregaListagemDto> cadastrarEntrega(@Valid @RequestBody EntregaCriacaoDto novaEntregaDto) {
         EntregaListagemDto entrega = entregaService.cadastrarEntrega(novaEntregaDto);
@@ -69,5 +75,11 @@ public class EntregaController {
     @GetMapping("/condominio/{condominioId}/csv")
     public void gerarCsvDeEntregasPorCondominio(HttpServletResponse response, @PathVariable Integer condominioId) throws IOException, IOException {
         entregaService.gerarCsvDeEntregasPorCondominio(response, condominioId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirEntrega(@PathVariable Integer id) {
+        entregaService.excluirEntrega(id);
+        return ResponseEntity.noContent().build();
     }
 }

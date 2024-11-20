@@ -25,4 +25,6 @@ public interface EntregaRepository extends JpaRepository<Entrega, Integer> {
     Optional<Entrega> findTopByOrderByDataRecebimentoMoradorDesc();
 
     List<Entrega> findByApartamentoNumAp(String numeroApartamento);
+
+
 }

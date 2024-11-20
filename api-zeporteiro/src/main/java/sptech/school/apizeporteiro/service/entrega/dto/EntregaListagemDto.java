@@ -1,13 +1,13 @@
 package sptech.school.apizeporteiro.service.entrega.dto;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
-import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
+import sptech.school.apizeporteiro.domain.entrega.Entrega;
 
 import java.time.LocalDate;
 
 @Data
 public class EntregaListagemDto {
+    private Integer id; // Adicionado campo id
     private String tipoEntrega;
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
@@ -28,5 +28,34 @@ public class EntregaListagemDto {
         private String nome;
         private String rg;
     }
-}
 
+    public static EntregaListagemDto toDto(Entrega entrega) {
+        if (entrega == null) {
+            return null;
+        }
+
+        EntregaListagemDto dto = new EntregaListagemDto();
+        dto.setId(entrega.getId()); // Definindo o ID da entrega
+        dto.setTipoEntrega(entrega.getTipoEntrega());
+        dto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
+        dto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
+        dto.setRecebido(entrega.getRecebido());
+
+        if (entrega.getApartamento() != null) {
+            EntregaListagemDto.ApartamentoDto apartamentoDto = new EntregaListagemDto.ApartamentoDto();
+            apartamentoDto.setId(entrega.getApartamento().getId());
+            apartamentoDto.setNumAp(entrega.getApartamento().getNumAp());
+            dto.setApartamento(apartamentoDto);
+        }
+
+        if (entrega.getPorteiro() != null) {
+            EntregaListagemDto.PorteiroDto porteiroDto = new EntregaListagemDto.PorteiroDto();
+            porteiroDto.setId(entrega.getPorteiro().getId());
+            porteiroDto.setNome(entrega.getPorteiro().getNome());
+            porteiroDto.setRg(entrega.getPorteiro().getRg());
+            dto.setPorteiro(porteiroDto);
+        }
+
+        return dto;
+    }
+}

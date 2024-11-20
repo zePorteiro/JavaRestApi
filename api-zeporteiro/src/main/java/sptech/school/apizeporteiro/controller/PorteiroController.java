@@ -15,6 +15,9 @@ import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto;
+import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto.EntregaDto;
+import sptech.school.apizeporteiro.service.porteiro.dto.PorteiroListagemDto.CondominioDto;
 
 @RestController
 @RequestMapping("/porteiros")
@@ -44,6 +47,19 @@ public class PorteiroController {
                     PorteiroListagemDto dto = new PorteiroListagemDto();
                     dto.setId(porteiro.getId());
                     dto.setNome(porteiro.getNome());
+                    dto.setRg(porteiro.getRg());
+                    dto.setSenha(porteiro.getSenha());
+                    dto.setCondominio(porteiro.getCondominio() != null ? new CondominioDto(porteiro.getCondominio().getId(), porteiro.getCondominio().getNome()) : null);
+                    dto.setEntregas(porteiro.getEntregas().stream()
+                            .map(entrega -> {
+                                PorteiroListagemDto.EntregaDto entregaDto = new PorteiroListagemDto.EntregaDto();
+                                entregaDto.setId(entrega.getId());
+                                entregaDto.setTipoEntrega(entrega.getTipoEntrega());
+                                entregaDto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
+                                entregaDto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
+                                return entregaDto;
+                            })
+                            .collect(Collectors.toList()));
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -51,9 +67,9 @@ public class PorteiroController {
         return ResponseEntity.ok(porteiroDtos);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PorteiroListagemDto> atualizar(@PathVariable Integer id, @RequestBody PorteiroCriacaoDto porteiroCriacaoDto) {
-        PorteiroListagemDto atualizado = porteiroService.atualizar(id, porteiroCriacaoDto);
+    @PutMapping("/{condominioId}/{id}")
+    public ResponseEntity<PorteiroListagemDto> atualizar(@PathVariable Integer id, @RequestBody PorteiroCriacaoDto porteiroCriacaoDto, PorteiroListagemDto porteiroListagemDto) {
+        PorteiroListagemDto atualizado = porteiroService.atualizar(id, porteiroCriacaoDto, porteiroListagemDto);
         return ResponseEntity.ok(atualizado);
     }
 

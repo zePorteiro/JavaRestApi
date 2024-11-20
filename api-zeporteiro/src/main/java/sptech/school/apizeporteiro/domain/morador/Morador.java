@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.domain.morador;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +27,10 @@ public class Morador {
     private String numeroWhats3;
 
     @ManyToOne
+    @JsonIgnore
     private Apartamento apartamento;
 
     @ManyToOne
+    @JsonIgnore
     private Condominio condominio;
 }

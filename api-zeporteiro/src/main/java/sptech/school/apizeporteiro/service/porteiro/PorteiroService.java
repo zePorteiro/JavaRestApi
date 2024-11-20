@@ -49,7 +49,7 @@ public class PorteiroService {
                 .collect(Collectors.toList());
     }
 
-    public PorteiroListagemDto atualizar(Integer id, PorteiroCriacaoDto porteiroCriacaoDto) {
+    public PorteiroListagemDto atualizar(Integer id, PorteiroCriacaoDto porteiroCriacaoDto, PorteiroListagemDto porteiroListagemDto) {
         Porteiro porteiro = porteiroRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Porteiro não encontrado"));
 
@@ -60,6 +60,7 @@ public class PorteiroService {
         porteiro.setRg(porteiroCriacaoDto.getRg());
         porteiro.setSenha(porteiroCriacaoDto.getSenha());
         porteiro.setCondominio(condominio);
+        porteiro.setId(porteiroListagemDto.getId());
 
         porteiroRepository.save(porteiro);
 
