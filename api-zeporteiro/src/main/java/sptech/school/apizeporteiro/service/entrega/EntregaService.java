@@ -58,6 +58,7 @@ public class EntregaService {
         entrega.setDataRecebimentoPorteiro(entregaDto.getDataRecebimentoPorteiro());
         entrega.setDataRecebimentoMorador(entregaDto.getDataRecebimentoMorador());
         entrega.setRecebido(entregaDto.getRecebido());
+        entrega.setId(id);
 
         Entrega entregaAtualizada = entregaRepository.save(entrega);
 
@@ -92,8 +93,11 @@ public class EntregaService {
         return EntregaMapper.toDto(entregaSalva);
     }
 
-    public List<Entrega> listarEntregas() {
-        return entregaRepository.findAll();
+    public List<EntregaListagemDto> listarEntregas() {
+        List<Entrega> entregas = entregaRepository.findAll();
+        return entregas.stream()
+                .map(EntregaListagemDto::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<EntregaListagemDto> buscarEntregasPorApartamento(String numeroApartamento) {

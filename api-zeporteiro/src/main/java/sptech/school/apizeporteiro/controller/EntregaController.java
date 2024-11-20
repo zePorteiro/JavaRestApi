@@ -43,8 +43,8 @@ public class EntregaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Entrega>> listarEntregas() {
-        List<Entrega> entregas = entregaService.listarEntregas();
+    public ResponseEntity<List<EntregaListagemDto>> listarEntregas() {
+        List<EntregaListagemDto> entregas = entregaService.listarEntregas();
         return ResponseEntity.ok(entregas);
     }
 
