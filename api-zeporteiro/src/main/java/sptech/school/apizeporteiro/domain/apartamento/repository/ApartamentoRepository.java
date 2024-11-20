@@ -19,6 +19,9 @@ public interface ApartamentoRepository extends JpaRepository<Apartamento, Intege
 
     // SELECT * FROM apartamento WHERE num_ap like 'XPTO'
 
+    // Deletar apartamento por ID
+    void deleteById(Integer id);
+
     List<Apartamento> findByCondominioId(Integer condominioId);
 
     Optional<Apartamento> findByNumAp(String numAp);
