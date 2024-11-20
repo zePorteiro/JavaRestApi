@@ -104,6 +104,11 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version> <!-- Certifique-se que a versão está aqui -->
+		</dependency>
 	</dependencies>
 
 	<build>
