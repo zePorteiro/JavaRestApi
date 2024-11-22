@@ -6,7 +6,7 @@ on:
 
 jobs: 
     build:
-        runs-on: ubuntu_lastest
+        runs-on: ubuntu_latest
         steps: 
             - name: Checkout code
               uses: actions/checkout@v4 
@@ -20,7 +20,7 @@ jobs:
             - name: Build with Maven
               run: mvn -B package -DskipTests
 
-      test:
+    test:
         runs-on: ubuntu_latest
         needs: build
         steps: 
@@ -35,6 +35,4 @@ jobs:
 
             - name: Test with Maven
               run: mvn test
-
-
-              
+             
