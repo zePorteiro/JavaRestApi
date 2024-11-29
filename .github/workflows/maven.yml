@@ -8,7 +8,6 @@ jobs:
 
     test:
         runs-on: ubuntu_latest
-        needs: build
         steps: 
             - name: Checkout code
               uses: actions/checkout@v4 
@@ -22,7 +21,8 @@ jobs:
             - name: Test with Maven
               run: mvn test
 
-    build:
+    build:        
+        needs: test
         runs-on: ubuntu_latest
         steps: 
             - name: Checkout code
