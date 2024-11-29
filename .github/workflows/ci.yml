@@ -27,6 +27,9 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4 
 
+            - name: Run a script
+              run: echo "Hello, GitHub Actions!"
+
             - name: Set up JDK 17
               uses: actions/setup-java@v4
               with: 
