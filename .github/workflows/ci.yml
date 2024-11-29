@@ -18,7 +18,7 @@ jobs:
                 java-version: '17'
 
             - name: Build with Maven
-              run: mvn -B package -DskipTests
+              run: mvn -f api-zeporteiro/pom.xml -B package -DskipTests
 
     test:
         runs-on: ubuntu_latest
@@ -37,5 +37,5 @@ jobs:
                 java-version: '17'
 
             - name: Test with Maven
-              run: mvn test
+              run: mvn -f api-zeporteiro/pom.xml test
              
