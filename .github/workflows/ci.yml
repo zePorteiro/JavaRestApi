@@ -6,7 +6,7 @@ on:
 
 jobs: 
     build:
-        runs-on: ubuntu_latest
+        runs-on: ubuntu-latest
         steps: 
             - name: Checkout code
               uses: actions/checkout@v4 
@@ -21,7 +21,7 @@ jobs:
               run: mvn -f api-zeporteiro/pom.xml -B package -DskipTests
 
     test:
-        runs-on: ubuntu_latest
+        runs-on: ubuntu-latest
         needs: build
         steps: 
             - name: Checkout code
