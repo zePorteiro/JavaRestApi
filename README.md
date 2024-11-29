@@ -1,3 +1,2 @@
 # exemplo-actions
-# exemplo-actions
 
