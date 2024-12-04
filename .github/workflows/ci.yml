@@ -1,9 +1,11 @@
 name: Continuous Integration
 
 on:
-    push: 
-        branches: [integracoes]
-
+    pull_request: 
+        branches:
+          - integracoes
+        types: [opened, reopened]
+        
 jobs: 
     build:
         runs-on: ubuntu-latest
