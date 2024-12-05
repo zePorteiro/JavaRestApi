@@ -19,4 +19,4 @@ jobs:
         run: docker rm zeporteiro || true
 
       - name: Run Docker container 
-        run: docker run --name zeporteiro -d -p 8080:8080 tiakicardozo/zeporteiro:latest
+        run: docker run --name zeporteiro -d -p 8080:8080 tiakicardozo/JavaRestApi:latest
