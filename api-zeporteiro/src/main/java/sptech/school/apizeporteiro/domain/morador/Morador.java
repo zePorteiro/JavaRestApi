@@ -17,20 +17,29 @@ public class Morador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String email;
-    private String senha;
-    private String cpf;
-    private String cep;
-    private String nome;
-    private String numeroWhats1;
-    private String numeroWhats2;
-    private String numeroWhats3;
 
-    @ManyToOne
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String senha;
+
+    @Column(nullable = false)
+    private String telefone;
+
+    @Column(nullable = false)
+    private String cep;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apartamento_id", nullable = false)
     @JsonIgnore
     private Apartamento apartamento;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "condominio_id", nullable = false)
     @JsonIgnore
     private Condominio condominio;
 }

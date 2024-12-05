@@ -22,6 +22,9 @@ public interface ApartamentoRepository extends JpaRepository<Apartamento, Intege
     // Deletar apartamento por ID
     void deleteById(Integer id);
 
+    boolean existsByNumApAndCondominioId(String numAp, Integer condominioId);
+    Optional<Apartamento> findByNumApAndCondominioId(String numAp, Integer condominioId);
+
     List<Apartamento> findByCondominioId(Integer condominioId);
 
     Optional<Apartamento> findByNumAp(String numAp);

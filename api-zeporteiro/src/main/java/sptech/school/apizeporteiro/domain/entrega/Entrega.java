@@ -1,6 +1,7 @@
 package sptech.school.apizeporteiro.domain.entrega;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +27,11 @@ public class Entrega {
     private Boolean recebido;
     @ManyToOne
     @JoinColumn(name = "APARTAMENTO_ID", nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     private Apartamento apartamento;
     @ManyToOne
     @JoinColumn(name = "FK_PORTEIRO", nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     private Porteiro porteiro;
 
 

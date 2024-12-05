@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.domain.apartamento;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +30,6 @@ public class Apartamento {
     @OneToMany(mappedBy = "apartamento")
     private List<Morador> moradores;
     @OneToMany(mappedBy = "apartamento")
+    @JsonBackReference
     private List<Entrega> entregas;
 }

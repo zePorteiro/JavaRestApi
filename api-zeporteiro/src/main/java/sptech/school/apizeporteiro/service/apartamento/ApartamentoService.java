@@ -31,6 +31,17 @@ public class ApartamentoService {
     private final ClienteRepository clienteRepository;
     private final CondominioRepository condominioRepository;
 
+    public boolean verificarApartamentoExiste(String cep, String numero) {
+        // Primeiro busca o condomínio pelo CEP
+        Condominio condominio = condominioRepository.findByCep(cep);
+        if (condominio == null) {
+            return false;
+        }
+
+        // Verifica se existe o apartamento neste condomínio
+        return apartamentoRepository.existsByNumApAndCondominioId(numero, condominio.getId());
+    }
+
     public List<ApartamentoListagemDto> listarApartamentosPorCondominio(Integer condominioId) {
         List<Apartamento> apartamentos = apartamentoRepository.findByCondominioId(condominioId);
         return apartamentos.stream()

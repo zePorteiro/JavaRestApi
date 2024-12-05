@@ -20,6 +20,14 @@ public class ApartamentoController {
     @Autowired
     private ApartamentoService apartamentoService;
 
+    @GetMapping("/verificar")
+    public ResponseEntity<Boolean> verificarApartamento(
+            @RequestParam String cep,
+            @RequestParam String numero) {
+        boolean exists = apartamentoService.verificarApartamentoExiste(cep, numero);
+        return ResponseEntity.ok(exists);
+    }
+
     @PostMapping("/salvar-lote")
     public ResponseEntity<List<ApartamentoListagemDto>> salvarApartamentos(@RequestBody List<ApartamentoCriacaoDto> apartamentosDTO) {
         List<ApartamentoListagemDto> apartamentosSalvos = apartamentoService.salvarApartamentos(apartamentosDTO);

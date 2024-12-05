@@ -1,6 +1,7 @@
 package sptech.school.apizeporteiro.confiiguration.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import sptech.school.apizeporteiro.confiiguration.security.jwt.GerenciadorTokenJwt;
@@ -20,11 +23,11 @@ import java.util.Objects;
 
 public class AutenticacaoFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilter.class);
-    private final AutenticacaoService autenticacaoService;
+    private final UserDetailsService userDetailsService;
     private final GerenciadorTokenJwt jwtTokenManager;
 
-    public AutenticacaoFilter(AutenticacaoService autenticacaoService, GerenciadorTokenJwt jwtTokenManager) {
-        this.autenticacaoService = autenticacaoService;
+    public AutenticacaoFilter(UserDetailsService userDetailsService, GerenciadorTokenJwt jwtTokenManager) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenManager = jwtTokenManager;
     }
 
@@ -37,41 +40,45 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
 
         String requestTokenHeader = request.getHeader("Authorization");
 
-        if(Objects.nonNull(requestTokenHeader) && requestTokenHeader.startsWith("Bearer")){
+        if (Objects.nonNull(requestTokenHeader) && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
 
-            try{
-                username =  jwtTokenManager.getUsernameFromToken(jwtToken);
-            } catch (ExpiredJwtException exception){
-
+            try {
+                username = jwtTokenManager.getUsernameFromToken(jwtToken);
+            } catch (ExpiredJwtException exception) {
                 LOGGER.info("[FALHA NA AUTENTICACAO] - Token expirado, usuario: {} - {}",
                         exception.getClaims().getSubject(), exception.getMessage());
-
-                LOGGER.trace("[FALHA NA AUTENTICACAO] - stack trace: $s", exception);
-
+                LOGGER.trace("[FALHA NA AUTENTICACAO] - stack trace: {}", exception);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return; // Não continuar o filtro após erro de autenticação
+            } catch (JwtException exception) {
+                LOGGER.warn("[FALHA NA AUTENTICACAO] - Token inválido: {} - {}", jwtToken, exception.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return; // Não continuar o filtro após erro de autenticação
             }
         }
 
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             addUsernameInContext(request, username, jwtToken);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken){
-        UserDetails userDetails = autenticacaoService.loadUserByUsername(username);
+    private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (jwtTokenManager.validateToken(jwtToken, userDetails)){
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+            if (userDetails != null && jwtTokenManager.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
 
-            usernamePasswordAuthenticationToken
-                    .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (UsernameNotFoundException e) {
+            LOGGER.warn("Usuário não encontrado: {}", username);
         }
     }
 }
