@@ -64,4 +64,4 @@ jobs:
         uses: docker/build-push-action@v5
         with: 
           push: true
-          tags: tiakicardozo/zeporteiro:latest
+          tags: tiakicardozo/JavaRestApi:latest
