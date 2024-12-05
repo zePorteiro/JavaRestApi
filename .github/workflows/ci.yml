@@ -4,7 +4,7 @@ on:
     pull_request: 
         branches:
           - integracoes
-          - develop
+          - dev
         types: [opened, reopened]
         
 jobs: 
