@@ -10,13 +10,13 @@ jobs:
     runs-on: self-hosted 
     steps:
       - name: Pull Docker image 
-        run: docker pull tiakicardozo/zeporteiro:latest
+        run: docker pull tiakicardozo/JavaRestApi:latest
 
       - name: Stop Docker container 
-        run: docker stop zeporteiro || true
+        run: docker stop JavaRestApi || true
 
       - name: Remove Docker container 
-        run: docker rm zeporteiro || true
+        run: docker rm JavaRestApi || true
 
       - name: Run Docker container 
-        run: docker run --name zeporteiro -d -p 8080:8080 tiakicardozo/JavaRestApi:latest
+        run: docker run --name JavaRestApi -d -p 8080:8080 tiakicardozo/JavaRestApi:latest
