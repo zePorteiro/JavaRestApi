@@ -4,6 +4,10 @@ on:
   pull_request: 
     branches:
       - integracoes
+<<<<<<< HEAD
+=======
+      - dev
+>>>>>>> f8fe8ab389d2b08964e5d2b11ccfc473b04e9495
     types: [opened, reopened]
         
 jobs: 
@@ -63,4 +67,8 @@ jobs:
         uses: docker/build-push-action@v5
         with: 
           push: true
+<<<<<<< HEAD
           tags: tiakicardozo/zeporteiro:latest
+=======
+          tags: tiakicardozo/zeporteiro:latest
+>>>>>>> f8fe8ab389d2b08964e5d2b11ccfc473b04e9495
