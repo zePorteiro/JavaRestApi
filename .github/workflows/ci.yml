@@ -2,9 +2,7 @@ name: Continuous Integration
 
 on:
     pull_request: 
-        branches:
-          - integracoes
-          - develop
+        branches: [integracoes, dev]
         types: [opened, reopened]
         
 jobs: 
