@@ -33,13 +33,11 @@ public class Morador {
     @Column(nullable = false)
     private String cep;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "apartamento_id", nullable = false)
-    @JsonIgnore
     private Apartamento apartamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "condominio_id", nullable = false)
-    @JsonIgnore
     private Condominio condominio;
 }

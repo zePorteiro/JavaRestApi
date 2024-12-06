@@ -25,11 +25,14 @@ public class Condominio {
     private String numero;
     private String bairro;
     private String cidade;
+
     @ManyToOne
     private Cliente cliente;
+
     @OneToMany(mappedBy = "condominio")
     @JsonIgnore
     private List<Apartamento> apartamentos;
+
     @OneToMany(mappedBy = "condominio")
     @JsonIgnore
     private List<Porteiro> porteiros;

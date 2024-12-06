@@ -28,11 +28,12 @@ public class Apartamento {
 
     @ManyToOne
     private Condominio condominio;
+
     @OneToMany(mappedBy = "apartamento")
     @JsonIgnore
     private List<Morador> moradores;
+
     @OneToMany(mappedBy = "apartamento")
-    @JsonBackReference
     @JsonIgnore
     private List<Entrega> entregas;
 }
