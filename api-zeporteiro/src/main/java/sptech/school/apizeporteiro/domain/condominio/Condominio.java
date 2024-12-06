@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.domain.condominio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,10 +25,15 @@ public class Condominio {
     private String numero;
     private String bairro;
     private String cidade;
+
     @ManyToOne
     private Cliente cliente;
+
     @OneToMany(mappedBy = "condominio")
+    @JsonIgnore
     private List<Apartamento> apartamentos;
+
     @OneToMany(mappedBy = "condominio")
+    @JsonIgnore
     private List<Porteiro> porteiros;
 }

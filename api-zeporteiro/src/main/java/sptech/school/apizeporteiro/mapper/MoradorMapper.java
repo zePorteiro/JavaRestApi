@@ -5,9 +5,12 @@ import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.morador.Morador;
+import sptech.school.apizeporteiro.service.morador.autenticacao.dto.MoradorDetalhesDto;
+import sptech.school.apizeporteiro.service.morador.autenticacao.dto.MoradorTokenDto;
 import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
+import sptech.school.apizeporteiro.service.morador.dto.MoradorResponseDto;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,11 +25,13 @@ public class MoradorMapper {
         MoradorListagemDto dto = new MoradorListagemDto();
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
-        dto.setNumeroWhats1(entity.getNumeroWhats1());
-        dto.setNumeroWhats2(entity.getNumeroWhats2());
-        dto.setNumeroWhats3(entity.getNumeroWhats3());
+        dto.setEmail(entity.getEmail());
+        dto.setTelefone(entity.getTelefone());
+        dto.setCep(entity.getCep());
 
-        dto.setApartamento(toApartamentoDto(entity.getApartamento()));
+        if (entity.getApartamento() != null) {
+            dto.setApartamento(toApartamentoDto(entity.getApartamento()));
+        }
 
         return dto;
     }
@@ -36,43 +41,52 @@ public class MoradorMapper {
 
         MoradorListagemDto.ApartamentoDto apartamentoDto = new MoradorListagemDto.ApartamentoDto();
         apartamentoDto.setId(entity.getId());
-        apartamentoDto.setBloco(entity.getBloco());
         apartamentoDto.setNumAp(entity.getNumAp());
-        apartamentoDto.setVazio(entity.isVazio());
 
         return apartamentoDto;
     }
 
-    public static Morador toEntity(MoradorCriacaoDto dto, Apartamento apartamento) {
-        if (dto == null) return null;
-
-        Morador morador = new Morador();
-        morador.setNome(dto.getNome());
-        morador.setNumeroWhats1(dto.getNumeroWhats1());
-        morador.setNumeroWhats2(dto.getNumeroWhats2());
-        morador.setNumeroWhats3(dto.getNumeroWhats3());
-        morador.setApartamento(apartamento);
-
-        return morador;
-    }
-    public static Morador toEntity(CadastroMoradorDto dto, Condominio condominio) {
+    public static Morador toEntity(CadastroMoradorDto dto, Condominio condominio, Apartamento apartamento) {
         if (dto == null) return null;
 
         Morador morador = new Morador();
         morador.setNome(dto.getNome());
         morador.setEmail(dto.getEmail());
         morador.setSenha(dto.getSenha());
-        morador.setCpf(dto.getCpf());
+        morador.setTelefone(dto.getTelefone());
         morador.setCep(dto.getCep());
         morador.setCondominio(condominio);
+        morador.setApartamento(apartamento);
+
         return morador;
     }
 
-    public static List<Morador> toEntityList(List<MoradorCriacaoDto> dtos, Apartamento apartamento) {
-        if (dtos == null) return Collections.emptyList();
+    public static List<MoradorListagemDto> toDtoList(List<Morador> entities) {
+        if (entities == null) return Collections.emptyList();
 
-        return dtos.stream()
-                .map(dto -> toEntity(dto, apartamento))
+        return entities.stream()
+                .map(MoradorMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public static MoradorTokenDto of(Morador morador, String token) {
+        MoradorTokenDto moradorTokenDto = new MoradorTokenDto();
+        moradorTokenDto.setUserId(morador.getId());
+        moradorTokenDto.setEmail(morador.getEmail());
+        moradorTokenDto.setNome(morador.getNome());
+        moradorTokenDto.setToken(token);
+        return moradorTokenDto;
+    }
+
+    public static MoradorResponseDto toResponseDto(Morador morador) {
+        if (morador == null) {
+            return null;
+        }
+        return new MoradorResponseDto(
+                morador.getId(),
+                morador.getNome(),
+                morador.getEmail(),
+                morador.getApartamento()
+        );
     }
 }

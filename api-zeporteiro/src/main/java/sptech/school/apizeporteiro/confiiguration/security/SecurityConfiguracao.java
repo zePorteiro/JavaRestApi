@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +27,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import sptech.school.apizeporteiro.confiiguration.security.jwt.GerenciadorTokenJwt;
 import sptech.school.apizeporteiro.service.cliente.autenticacao.AutenticacaoService;
+import sptech.school.apizeporteiro.service.morador.autenticacao.MoradorAutenticacaoService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +41,9 @@ public class SecurityConfiguracao {
 
     @Autowired
     private AutenticacaoService autenticacaoService;
+
+    @Autowired
+    private MoradorAutenticacaoService moradorAutenticacaoService;
 
     @Autowired
     private AutenticacaoEntryPoint autenticacaoEntryPoint;
@@ -62,15 +70,43 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/python-api/**"),
             new AntPathRequestMatcher("/react-app/**"),
 //            new AntPathRequestMatcher("/**")
+            new AntPathRequestMatcher("/moradores/cadastrarMorador", HttpMethod.POST.name()),
+            new AntPathRequestMatcher("/moradores/login", HttpMethod.POST.name()),
+            new AntPathRequestMatcher("/apartamentos/verificar", HttpMethod.GET.name())
     };
 
+//    @Bean
+//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+//        AuthenticationManagerBuilder authenticationManagerBuilder =
+//                http.getSharedObject(AuthenticationManagerBuilder.class);
+//
+//        // Configura provider para clientes
+//        authenticationManagerBuilder.userDetailsService(autenticacaoService)
+//                .passwordEncoder(passwordEncoder());
+//
+//        // Configura provider para moradores
+//        authenticationManagerBuilder.userDetailsService(moradorAutenticacaoService)
+//                .passwordEncoder(passwordEncoder());
+//
+//        return authenticationManagerBuilder.build();
+//    }
+
+//    @Bean
+//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+//        List<AuthenticationProvider> providers = new ArrayList<>();
+//
+//        providers.add(new AutenticacaoProvider(autenticacaoService, passwordEncoder()));
+//        providers.add(new MoradorAutenticacaoProvider(moradorAutenticacaoService, passwordEncoder()));
+//
+//        return new ProviderManager(providers);
+//    }
+
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(new
-                AutenticacaoProvider(autenticacaoService, passwordEncoder()));
-        return authenticationManagerBuilder.build();
+    public AuthenticationManager authManager() {
+        List<AuthenticationProvider> providers = new ArrayList<>();
+        providers.add(new AutenticacaoProvider(autenticacaoService, passwordEncoder()));
+        providers.add(new MoradorAutenticacaoProvider(moradorAutenticacaoService, passwordEncoder()));
+        return new ProviderManager(providers);
     }
 
 
@@ -81,15 +117,21 @@ public class SecurityConfiguracao {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(CsrfConfigurer<HttpSecurity>::disable)
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS).permitAll().anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(URLS_PERMITIDAS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(autenticacaoEntryPoint))
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling(handling ->
+                        handling.authenticationEntryPoint(autenticacaoEntryPoint))
+                .sessionManagement(management ->
+                        management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http.addFilterBefore(jwtAuthenticationFilterBean(),
+                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
 
     @Bean
@@ -99,8 +141,23 @@ public class SecurityConfiguracao {
 
     @Bean
     public AutenticacaoFilter jwtAuthenticationFilterBean() {
-        return new AutenticacaoFilter(autenticacaoService, jwtAuthenticacaoUtilBean());
+        // Criar um composite UserDetailsService que tenta ambos os serviços
+        return new AutenticacaoFilter(
+                username -> {
+                    try {
+                        return autenticacaoService.loadUserByUsername(username);
+                    } catch (UsernameNotFoundException e) {
+                        return moradorAutenticacaoService.loadUserByUsername(username);
+                    }
+                },
+                jwtAuthenticacaoUtilBean()
+        );
     }
+
+//    @Bean
+//    public AutenticacaoFilter moradorJwtAuthenticationFilterBean() {
+//        return new AutenticacaoFilter(moradorAutenticacaoService, jwtAuthenticacaoUtilBean());
+//    }
 
 
     @Bean

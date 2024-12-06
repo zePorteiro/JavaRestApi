@@ -1,4 +1,4 @@
-package sptech.school.apizeporteiro.service.morador.autenticacao;
+package sptech.school.apizeporteiro.service.morador.autenticacao.dto;
 
 public class MoradorTokenDto {
         private Integer userId;

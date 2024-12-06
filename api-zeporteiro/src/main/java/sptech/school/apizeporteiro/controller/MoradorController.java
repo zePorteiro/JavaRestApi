@@ -8,14 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.apizeporteiro.domain.morador.Morador;
+import sptech.school.apizeporteiro.mapper.MoradorMapper;
 import sptech.school.apizeporteiro.service.morador.MoradorService;
-import sptech.school.apizeporteiro.service.morador.autenticacao.MoradorTokenDto;
+import sptech.school.apizeporteiro.service.morador.autenticacao.dto.MoradorDetalhesDto;
+import sptech.school.apizeporteiro.service.morador.autenticacao.dto.MoradorTokenDto;
 import sptech.school.apizeporteiro.service.morador.dto.CadastroMoradorDto;
 import sptech.school.apizeporteiro.service.morador.dto.LoginMoradorDto;
-import sptech.school.apizeporteiro.service.morador.dto.MoradorCriacaoDto;
 import sptech.school.apizeporteiro.service.morador.dto.MoradorListagemDto;
+import sptech.school.apizeporteiro.service.morador.dto.MoradorResponseDto;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 
 @RestController
@@ -25,21 +26,16 @@ import java.util.List;
 public class MoradorController {
     private final MoradorService moradorService;
 
-    @PostMapping("/apartamento/{fkApartamento}")
-    public ResponseEntity<Void> cadastrarMorador(@RequestBody MoradorCriacaoDto moradorCriacaoDto, @PathVariable Integer fkApartamento) {
-        moradorService.cadastrarMorador(moradorCriacaoDto, fkApartamento);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @PostMapping("/apartamento/{fkApartamento}")
+//    public ResponseEntity<Void> cadastrarMorador(@RequestBody MoradorCriacaoDto moradorCriacaoDto, @PathVariable Integer fkApartamento) {
+//        moradorService.cadastrarMorador(moradorCriacaoDto, fkApartamento);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
     @PostMapping("/cadastrarMorador")
-    public ResponseEntity<Morador> cadastrarMorador(@RequestBody @Valid CadastroMoradorDto dto) {
-        Morador morador = moradorService.cadastrarMorador(dto);
-        return ResponseEntity.ok(morador);
-    }
-    @PostMapping("/lista/apartamento/{fkApartamento}")
-    public ResponseEntity<Void> cadastrarMoradores(@RequestBody List<MoradorCriacaoDto> moradorCriacaoDtos, @PathVariable Integer fkApartamento) {
-        moradorService.cadastrarMoradores(moradorCriacaoDtos, fkApartamento);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<MoradorTokenDto> cadastrarMorador(@RequestBody @Valid CadastroMoradorDto dto) {
+        MoradorTokenDto moradorTokenDto = moradorService.cadastrarMorador(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(moradorTokenDto);
     }
 
     @PostMapping("/login")
@@ -48,7 +44,7 @@ public class MoradorController {
             MoradorTokenDto tokenDto = moradorService.authenticate(loginDto);
             return ResponseEntity.ok(tokenDto);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
@@ -58,11 +54,18 @@ public class MoradorController {
         return ResponseEntity.ok(moradores);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizarMorador(@PathVariable Integer id, @RequestBody MoradorCriacaoDto moradorCriacaoDto) {
-        moradorService.updateMorador(id, moradorCriacaoDto);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<MoradorResponseDto> getMoradorById(@PathVariable Integer id) {
+        return moradorService.findById(id)
+                .map(morador -> ResponseEntity.ok(MoradorMapper.toResponseDto(morador)))
+                .orElse(ResponseEntity.notFound().build());
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Void> atualizarMorador(@PathVariable Integer id, @RequestBody MoradorCriacaoDto moradorCriacaoDto) {
+//        moradorService.updateMorador(id, moradorCriacaoDto);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarMorador(@PathVariable Integer id) {

@@ -1,5 +1,6 @@
 package sptech.school.apizeporteiro.domain.porteiro;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class Porteiro {
     @ManyToOne
     private Condominio condominio;
     @OneToMany(mappedBy = "porteiro")
+    @JsonBackReference
     private List<Entrega> entregas = new ArrayList<>();
 }

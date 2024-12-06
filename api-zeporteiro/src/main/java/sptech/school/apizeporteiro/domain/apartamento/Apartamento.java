@@ -1,5 +1,7 @@
 package sptech.school.apizeporteiro.domain.apartamento;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +28,12 @@ public class Apartamento {
 
     @ManyToOne
     private Condominio condominio;
+
     @OneToMany(mappedBy = "apartamento")
+    @JsonIgnore
     private List<Morador> moradores;
+
     @OneToMany(mappedBy = "apartamento")
+    @JsonIgnore
     private List<Entrega> entregas;
 }
