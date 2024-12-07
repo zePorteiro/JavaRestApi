@@ -24,6 +24,13 @@ public class EntregaController {
 
     private final EntregaService entregaService;
 
+    // EntregaController.java
+    @GetMapping("/condominio/{condominioId}")
+    public ResponseEntity<List<EntregaListagemDto>> buscarEntregasPorCondominio(@PathVariable Integer condominioId) {
+        List<EntregaListagemDto> entregas = entregaService.buscarEntregasPorCondominio(condominioId);
+        return ResponseEntity.ok(entregas);
+    }
+
     @PutMapping("/{Id}")
     public ResponseEntity<EntregaListagemDto> atualizarEntrega(@PathVariable Integer Id, @Valid @RequestBody EntregaCriacaoDto entregaDto) {
         EntregaListagemDto entrega = entregaService.atualizarEntrega(Id, entregaDto);
