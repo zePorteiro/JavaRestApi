@@ -16,6 +16,8 @@ public interface EntregaRepository extends JpaRepository<Entrega, Integer> {
     // SELECT * FROM entrega WHERE dataRecebimentoPorteiro >= 'XPTO' AND dataRecebimentoPorteiro < 'XPTO'
     List<Entrega> findAllByDataRecebimentoPorteiroAfter(LocalDate dataRecebimentoPorteiro);
 
+    List<Entrega> findByCondominioId(Integer condominioId);
+
     // SELECT * FROM entrega WHERE dataRecebimentoMorador >= 'XPTO' AND dataRecebimentoMorador < 'XPTO'
     List<Entrega> findAllByDataRecebimentoMoradorAfter(LocalDate dataRecebimentoMorador);
 

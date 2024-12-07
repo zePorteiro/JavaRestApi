@@ -14,11 +14,13 @@ public class EntregaCriacaoDto {
     @Size(max = 300)
     @Size(min = 2)
     private String tipoEntrega;
-    @PastOrPresent(message = "A data de recebimento do morador deve ser no passado ou no presente")
+    @PastOrPresent(message = "A data de recebimento do porteiro deve ser no passado ou no presente")
     private LocalDate dataRecebimentoPorteiro;
+    @PastOrPresent(message = "A data de recebimento do morador deve ser no passado ou no presente")
     private LocalDate dataRecebimentoMorador;
     private Boolean recebido;
     private String numAp;
     private Integer idPorteiro;
+    private Integer condominioId;
 }
 
