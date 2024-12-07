@@ -3,15 +3,17 @@ package sptech.school.apizeporteiro.mapper;
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
-import sptech.school.apizeporteiro.domain.entrega.repository.EntregaRepository;
 import sptech.school.apizeporteiro.domain.morador.Morador;
 import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoCriacaoDto;
 import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoListagemDto;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ApartamentoMapper {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static ApartamentoListagemDto toDto(Apartamento entity) {
         if (entity == null) return null;
@@ -62,8 +64,8 @@ public class ApartamentoMapper {
         ApartamentoListagemDto.EntregaDto dto = new ApartamentoListagemDto.EntregaDto();
         dto.setId(entity.getId());
         dto.setTipoEntrega(entity.getTipoEntrega());
-        dto.setDataRecebimentoPorteiro(entity.getDataRecebimentoPorteiro());
-        dto.setDataRecebimentoMorador(entity.getDataRecebimentoMorador());
+        dto.setDataRecebimentoPorteiro(entity.getDataRecebimentoPorteiro().format(formatter));
+        dto.setDataRecebimentoMorador(entity.getDataRecebimentoMorador() != null ? entity.getDataRecebimentoMorador().format(formatter) : null);
         dto.setRecebido(entity.getRecebido());
 
         return dto;
