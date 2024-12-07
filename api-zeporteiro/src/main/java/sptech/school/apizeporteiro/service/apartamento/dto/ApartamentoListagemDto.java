@@ -1,41 +1,42 @@
 package sptech.school.apizeporteiro.service.apartamento.dto;
 
-import lombok.Data;
-import sptech.school.apizeporteiro.domain.entrega.Entrega;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class ApartamentoListagemDto {
     private Integer id;
     private String bloco;
     private String numAp;
-    private Boolean vazio;
+    private boolean vazio;
     private CondominioDto condominio;
     private List<MoradorDto> moradores;
     private List<EntregaDto> entregas;
 
-    @Data
+    @Getter
+    @Setter
     public static class CondominioDto {
         private Integer id;
         private String nome;
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class MoradorDto {
         private Integer id;
         private String nome;
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class EntregaDto {
         private Integer id;
         private String tipoEntrega;
-        private LocalDate dataRecebimentoPorteiro;
-        private LocalDate dataRecebimentoMorador;
-        private Boolean recebido;
+        private String dataRecebimentoPorteiro;
+        private String dataRecebimentoMorador;
+        private boolean recebido;
     }
-
-
 }

@@ -3,7 +3,6 @@ package sptech.school.apizeporteiro.domain.apartamento;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import sptech.school.apizeporteiro.domain.cliente.Cliente;
 import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.morador.Morador;
@@ -11,9 +10,7 @@ import sptech.school.apizeporteiro.domain.morador.Morador;
 import java.util.List;
 
 @Entity
-@Table(
-        name = "apartamento"
-)
+@Table(name = "apartamento")
 @Getter
 @Setter
 public class Apartamento {
