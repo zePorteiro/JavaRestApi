@@ -2,6 +2,7 @@ package sptech.school.apizeporteiro.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,5 +71,11 @@ public class ApartamentoController {
     public ResponseEntity<List<ApartamentoListagemDto>> listarApartamentosPorCondominio(@PathVariable Integer condominioId) {
         List<ApartamentoListagemDto> apartamentos = apartamentoService.listarApartamentosPorCondominio(condominioId);
         return ResponseEntity.ok(apartamentos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApartamentoListagemDto> atualizarApartamento(@PathVariable Integer id, @Valid @RequestBody ApartamentoCriacaoDto apartamentoDto) {
+        ApartamentoListagemDto apartamentoAtualizado = apartamentoService.atualizarApartamento(id, apartamentoDto);
+        return ResponseEntity.ok(apartamentoAtualizado);
     }
 }

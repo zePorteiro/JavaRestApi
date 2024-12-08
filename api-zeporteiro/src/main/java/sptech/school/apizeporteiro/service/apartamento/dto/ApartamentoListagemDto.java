@@ -11,7 +11,7 @@ public class ApartamentoListagemDto {
     private Integer id;
     private String bloco;
     private String numAp;
-    private Boolean vazio;
+    private boolean vazio;
     private CondominioDto condominio;
     private List<MoradorDto> moradores;
     private List<EntregaDto> entregas;
@@ -32,9 +32,9 @@ public class ApartamentoListagemDto {
     public static class EntregaDto {
         private Integer id;
         private String tipoEntrega;
-        private LocalDate dataRecebimentoPorteiro;
-        private LocalDate dataRecebimentoMorador;
-        private Boolean recebido;
+        private String dataRecebimentoPorteiro;
+        private String dataRecebimentoMorador;
+        private boolean recebido;
     }
 
 

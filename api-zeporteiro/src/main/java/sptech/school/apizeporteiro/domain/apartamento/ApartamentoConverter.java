@@ -4,6 +4,7 @@ import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.service.apartamento.dto.ApartamentoListagemDto;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,8 @@ public class ApartamentoConverter {
         ApartamentoListagemDto dto = new ApartamentoListagemDto();
         dto.setId(apartamento.getId());
         dto.setBloco(apartamento.getBloco());
+        dto.setNumAp(apartamento.getNumAp());
+        dto.setVazio(apartamento.isVazio());
 
         // Conversão do Condominio
         if (apartamento.getCondominio() != null) {
@@ -34,13 +37,14 @@ public class ApartamentoConverter {
         dto.setMoradores(moradorDtos);
 
         // Conversão das entregas
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         List<ApartamentoListagemDto.EntregaDto> entregaDtos = apartamento.getEntregas().stream()
                 .map(entrega -> {
                     ApartamentoListagemDto.EntregaDto entregaDto = new ApartamentoListagemDto.EntregaDto();
                     entregaDto.setId(entrega.getId());
                     entregaDto.setTipoEntrega(entrega.getTipoEntrega());
-                    entregaDto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
-                    entregaDto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
+                    entregaDto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro().format(formatter));
+                    entregaDto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador() != null ? entrega.getDataRecebimentoMorador().format(formatter) : null);
                     entregaDto.setRecebido(entrega.getRecebido());
                     return entregaDto;
                 })
