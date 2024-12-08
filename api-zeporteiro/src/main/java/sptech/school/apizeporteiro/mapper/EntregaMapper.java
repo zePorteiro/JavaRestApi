@@ -34,6 +34,7 @@ public class EntregaMapper {
 
         EntregaListagemDto dto = new EntregaListagemDto();
         dto.setTipoEntrega(entrega.getTipoEntrega());
+        dto.setId(entrega.getId());
         dto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
         dto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
         dto.setRecebido(entrega.getRecebido());

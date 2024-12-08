@@ -31,6 +31,19 @@ public class ApartamentoService {
     private final ClienteRepository clienteRepository;
     private final CondominioRepository condominioRepository;
 
+    // ApartamentoService.java
+    public ApartamentoListagemDto atualizarApartamento(Integer id, ApartamentoCriacaoDto apartamentoDto) {
+        Apartamento apartamento = apartamentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
+
+        apartamento.setBloco(apartamentoDto.getBloco());
+        apartamento.setNumAp(apartamentoDto.getNumAp());
+        apartamento.setVazio(apartamentoDto.getVazio());
+
+        Apartamento apartamentoAtualizado = apartamentoRepository.save(apartamento);
+        return ApartamentoMapper.toDto(apartamentoAtualizado);
+    }
+
     public List<ApartamentoListagemDto> listarApartamentosPorCondominio(Integer condominioId) {
         List<Apartamento> apartamentos = apartamentoRepository.findByCondominioId(condominioId);
         return apartamentos.stream()
