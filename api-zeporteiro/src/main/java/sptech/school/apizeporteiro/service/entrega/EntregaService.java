@@ -83,14 +83,30 @@ public class EntregaService {
                     "Porteiro não encontrado com o ID: " + novaEntregaDto.getIdPorteiro());
         }
 
+        Optional<Condominio> optionalCondominio = condominioRepository.findById(novaEntregaDto.getCondominioId());
+
+        if (optionalCondominio.isEmpty()) {
+            throw new EntityNotFoundException(
+                    "Condomínio não encontrado com o ID: " + novaEntregaDto.getCondominioId());
+        }
+
         Entrega entrega = EntregaMapper.toEntity(novaEntregaDto);
 
         entrega.setApartamento(optionalApartamento.get());
         entrega.setPorteiro(optionalPorteiro.get());
+        entrega.setCondominioId(optionalCondominio.get().getId());
 
         Entrega entregaSalva = entregaRepository.save(entrega);
 
         return EntregaMapper.toDto(entregaSalva);
+    }
+
+    // EntregaService.java
+    public List<EntregaListagemDto> buscarEntregasPorCondominio(Integer condominioId) {
+        List<Entrega> entregas = entregaRepository.findByCondominioId(condominioId);
+        return entregas.stream()
+                .map(EntregaMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<EntregaListagemDto> listarEntregas() {

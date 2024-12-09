@@ -32,20 +32,18 @@ public class ApartamentoService {
     private final CondominioRepository condominioRepository;
 
     public boolean verificarApartamentoExiste(String cep, String numero) {
-        // Primeiro busca o condomínio pelo CEP
         Condominio condominio = condominioRepository.findByCep(cep);
         if (condominio == null) {
             return false;
         }
 
-        // Verifica se existe o apartamento neste condomínio
         return apartamentoRepository.existsByNumApAndCondominioId(numero, condominio.getId());
     }
 
     public List<ApartamentoListagemDto> listarApartamentosPorCondominio(Integer condominioId) {
         List<Apartamento> apartamentos = apartamentoRepository.findByCondominioId(condominioId);
         return apartamentos.stream()
-                .map(ApartamentoConverter::toDto) // Usa o método de conversão
+                .map(ApartamentoConverter::toDto)
                 .collect(Collectors.toList());
     }
     public List<ApartamentoListagemDto> salvarApartamentos(List<ApartamentoCriacaoDto> apartamentosDTO) {
@@ -87,7 +85,7 @@ public class ApartamentoService {
             Apartamento apartamentoAtualizado = apartamentoRepository.save(apartamento);
             return ApartamentoMapper.toDto(apartamentoAtualizado);
         } else {
-            throw new RuntimeException("Apartamento não encontrado"); // Ajuste isso conforme suas exceções
+            throw new RuntimeException("Apartamento não encontrado");
         }
     }
 
@@ -95,7 +93,7 @@ public class ApartamentoService {
         if (apartamentoRepository.existsById(id)) {
             apartamentoRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Apartamento não encontrado"); // Ajuste isso conforme suas exceções
+            throw new RuntimeException("Apartamento não encontrado");
         }
     }
 
@@ -123,5 +121,15 @@ public class ApartamentoService {
         } else {
             return principal.toString();
         }
+    }
+
+    public ApartamentoListagemDto atualizarApartamento(Integer id, ApartamentoCriacaoDto apartamentoDto) {
+        Apartamento apartamento = apartamentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Apartamento não encontrado"));
+        apartamento.setBloco(apartamentoDto.getBloco());
+        apartamento.setNumAp(apartamentoDto.getNumAp());
+        apartamento.setVazio(apartamentoDto.getVazio());
+        Apartamento apartamentoAtualizado = apartamentoRepository.save(apartamento);
+        return ApartamentoMapper.toDto(apartamentoAtualizado);
     }
 }

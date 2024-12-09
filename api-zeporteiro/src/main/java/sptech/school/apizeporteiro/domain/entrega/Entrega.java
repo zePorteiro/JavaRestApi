@@ -25,6 +25,7 @@ public class Entrega {
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
     private Boolean recebido;
+    private Integer condominioId;
     @ManyToOne
     @JoinColumn(name = "APARTAMENTO_ID", nullable = false)
     @JsonManagedReference

@@ -1,6 +1,7 @@
 package sptech.school.apizeporteiro.mapper;
 
 import sptech.school.apizeporteiro.domain.apartamento.Apartamento;
+import sptech.school.apizeporteiro.domain.condominio.Condominio;
 import sptech.school.apizeporteiro.domain.entrega.Entrega;
 import sptech.school.apizeporteiro.domain.porteiro.Porteiro;
 import sptech.school.apizeporteiro.service.entrega.dto.EntregaCriacaoDto;
@@ -22,6 +23,7 @@ public class EntregaMapper {
         entrega.setDataRecebimentoPorteiro(dto.getDataRecebimentoPorteiro());
         entrega.setDataRecebimentoMorador(dto.getDataRecebimentoMorador());
         entrega.setRecebido(dto.getRecebido());
+        entrega.setCondominioId(dto.getCondominioId());
 
         return entrega;
     }
@@ -32,8 +34,8 @@ public class EntregaMapper {
         }
 
         EntregaListagemDto dto = new EntregaListagemDto();
-        dto.setId(entrega.getId());
         dto.setTipoEntrega(entrega.getTipoEntrega());
+        dto.setId(entrega.getId());
         dto.setDataRecebimentoPorteiro(entrega.getDataRecebimentoPorteiro());
         dto.setDataRecebimentoMorador(entrega.getDataRecebimentoMorador());
         dto.setRecebido(entrega.getRecebido());

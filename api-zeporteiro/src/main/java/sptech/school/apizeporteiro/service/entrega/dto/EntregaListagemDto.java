@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class EntregaListagemDto {
-    private Integer id;
+    private Integer id; // Adicionado campo id
     private String tipoEntrega;
     private LocalDate dataRecebimentoPorteiro;
     private LocalDate dataRecebimentoMorador;
