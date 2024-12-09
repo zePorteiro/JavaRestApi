@@ -35,7 +35,12 @@ public class ClienteService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public ClienteTokenDto criar(ClienteCriacaoDto clienteCriacaoDto){
+    public ClienteTokenDto criar(ClienteCriacaoDto clienteCriacaoDto) {
+        // Verificar se o email já está em uso
+        if (clienteRepository.findByEmail(clienteCriacaoDto.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já existente, tente cadastrar outro email, ou tente fazer o login.");
+        }
+
         final Cliente novoCliente = ClienteMapper.of(clienteCriacaoDto);
         String senhaCriptografada = passwordEncoder.encode(novoCliente.getSenha());
         novoCliente.setSenha(senhaCriptografada);

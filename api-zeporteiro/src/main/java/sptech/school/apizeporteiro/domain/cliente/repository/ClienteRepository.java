@@ -20,4 +20,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     // Utilizado no JWT
     Optional<Cliente> findByEmail(String email);
+
+
+
 }
