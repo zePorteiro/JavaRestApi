@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on:
     push: 
-        branches: [integracoes]
+        branches: [integracoes_1]
 
 jobs: 
     build:
