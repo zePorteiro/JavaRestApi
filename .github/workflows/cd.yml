@@ -15,10 +15,9 @@ jobs:
 
     - name: Configurar Ambiente (Java e Docker)
       run: |
-        sudo apt update
-        sudo apt install -y openjdk-17-jdk maven docker.io
-        sudo usermod -aG docker $USER
-        newgrp docker
+        choco install openjdk --version=17.0
+        choco install maven
+        choco install docker
 
     - name: Build do Projeto com Maven
       run: mvn clean package
