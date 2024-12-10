@@ -12,6 +12,9 @@ jobs:
       - name: Checkout do Código
         uses: actions/checkout@v3  
 
+      - name: Verificar versão do Docker
+        run: docker --version
+
       - name: Stop Docker container
         run: |
           docker stop 2db0f3bc0d82 || true  
