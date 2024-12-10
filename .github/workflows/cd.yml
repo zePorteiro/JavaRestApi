@@ -7,20 +7,19 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
-
+    runs-on: self-hosted 
     steps:
-    - name: Checkout Código
-      uses: actions/checkout@v3
+      - name: Checkout do Código
+        uses: actions/checkout@v3  
 
-    - name: Pull Docker image 
-    - run: docker pull hello-world:latest
+      - name: Stop Docker container
+        run: |
+          docker stop 2db0f3bc0d82 || true  
 
-    - name: Stop Docker container 
-    - run: docker stop hello-world || true
+      - name: Remove Docker container
+        run: |
+          docker rm 2db0f3bc0d82 || true 
 
-    - name: Remove Docker container 
-    - run: docker rm hello-world || true
-
-    - name: Run Docker container 
-    - run: docker run --name hello-world -d -p 8080:8080 hello-world:latest
+      - name: Run Docker container
+        run: |
+          docker run --name ci-example -d -p 8080:8080 hello-world 
