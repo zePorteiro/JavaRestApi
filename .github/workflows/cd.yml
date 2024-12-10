@@ -23,9 +23,6 @@ jobs:
         run: |
           docker rm 2db0f3bc0d82 || true 
 
-      - name: Run Docker container
-        run: |
-          docker create --name hello-world -p 8080:8080 hello-world
-          docker start hello-world
+  
 
 
