@@ -1,0 +1,36 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - integracoes_1
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Código
+      uses: actions/checkout@v3
+
+    - name: Configurar Ambiente (Java e Docker)
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-17-jdk maven docker.io
+        sudo usermod -aG docker $USER
+        newgrp docker
+
+    - name: Build do Projeto com Maven
+      run: mvn clean package
+
+    - name: Build da Imagem Docker
+      run: |
+        docker build -t my-docker-image:latest .
+    - name: Parar Container Existente
+      run: |
+        docker stop my_container || true
+        docker rm my_container || true
+
+    - name: Subir Novo Container
+      run: |
+        docker run -d --name my_container -p 8080:8080 hello-world:latest
