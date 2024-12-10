@@ -1,22 +1,24 @@
+# Etapa de construção
 FROM maven:3-openjdk-17 AS builder
 
 WORKDIR /build
 
-COPY ...
+# Copia o código-fonte para o contêiner
+COPY . .
 
-RUN mvn clean package -DskipTests - Dcheckstyle.skip=true
+# Executa o Maven para construir a aplicação (sem rodar os testes)
+RUN mvn clean package -DskipTests -Dcheckstyle.skip=true
 
-# Use uma imagem base do OpenJDK
+# Etapa final: Imagem para rodar a aplicação
 FROM openjdk:17-jdk-slim
 
-# Defina o diretório de trabalho no container
 WORKDIR /app
 
-# Copie o arquivo JAR gerado pelo Maven para o container
-COPY --from=builder/build/target/**.jar app.jar
+# Copia o arquivo JAR gerado pelo Maven para o contêiner
+COPY --from=builder /build/target/*.jar app.jar
 
 # Exponha a porta em que a aplicação será executada
 EXPOSE 8080
 
-# Comando para executar a aplicação
+# Comando para rodar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
