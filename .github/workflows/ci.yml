@@ -1,9 +1,8 @@
-name: Docker Publish
+name: Continuous Integration 
 
 on:
-  push:
-    branches:
-      - main
+    pull_request: 
+        branches: [integracoes_1]
 
 jobs:
   publish:
